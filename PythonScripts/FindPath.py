@@ -9,45 +9,35 @@ except: #otherwise, run
         import time
 
         #set variables
-        z=[]
-        zel=1
+        segment=[]
+        count=0
         dic={}
         y=0
-        zel=0
-        hay=[]
         #get file path
-        b=__file__ + "check universal functions"
+        filepath=__file__ + "check universal functions"
 
         #translate windows to macOS/linux if applicable, by changing character 92 (\) to /
             #then, split on the /
-        a=(b.replace(chr(92),"/")).split("/")
-
-        for w in a:
-            if y==0: #ignore first, which is a "" or D:
-                y=1
-                z.append("")
+        modfilepath=(filepath.replace(chr(92),"/")).split("/")
+        
+        for step in modfilepath:
+            if count==0: #ignore first, which is a "" or a "D:"
+                count=1
+                segment.append("")
                 continue
-            z.append(w) #adds step to path
-            zel+=1
-            hay.append(str(zel))
-            dic[str(zel)]="/".join(z) #stores path in dictionary
-            
-        global pat #
-        for a in dic: #for each step in path, print incrementally
-            pat=dic[a] #works if user input is dictionary key
+            segment.append(step) #adds step to path
             try:
-                exec(open(pat+"/universal functions.py").read()) #opens universal functions
+                exec(open("/".join(segment)+"/universal functions.py").read()) #opens universal functions
+                global path_to_directory #sets global path file to the user-chosen path
+                path_to_directory="/".join(segment)
                 break
             except: #if can not open universal functions file
                 continue
         try:
-            exec(open(pat+"/universal functions.py", "r").read())
-        except: #if universal functions is not work
-            sys.exit("Check universal functions.py perhaps...")
-        global path #sets global path file to the user-chosen path
-        path=pat
-        print(path+" located.") #confirmation message
-        return open(path+"/universal functions.py", "r").read()
+            open(path_to_directory+"/universal functions.py", "r").read()
+            return open(path_to_directory+"/universal functions.py", "r").read()
+        except:
+            sys.exit("It seems that the universal functions file cannot run!")
     exec(findpath())
 ############################################################################
 #All above uses os module to locate the project folder using user input
