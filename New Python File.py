@@ -1,5 +1,1 @@
-print("frick off")
-print()
-print("Dripo")
-print("A nice message!")
-input("")
+print("We should do work")
