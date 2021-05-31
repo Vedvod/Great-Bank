@@ -1,1 +1,2 @@
 print("frick off")
+print()
