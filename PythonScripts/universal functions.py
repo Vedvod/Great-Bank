@@ -170,12 +170,21 @@ def pimport(directory, mode="r"): #open file in specified mode and return conten
 
 
 '***5***'
-def txtfile(directory, tline="yes", letters="letters", newline="yes"): #for printing text files line by line at reading pace
+def txtfile(directory, modifier_list): #for printing text files line by line at reading pace
+    mods=set(modifier_list)
+    if len(mods.intersection({"?", "modlist"}))>0:
+        sprint("?, modlist - Opens this menu")
+        sprint("w, words - Prints by words.")
+        sprint("nl, newline - Prints text on a new line.")
     for line in open(path+directory): #per line in file given
         try: #try and execute the line
             exec(line)
         except: #if not executable, tline it, and strip the newline character
-            if tline=="yes":
+            if len(mods.intersection({"no-tline", "ntl"}))==0:
+                if len(mods.intersection({"w", "words"}))>0:
+                    letters="words"
+                if len(mods.intersection({"nl", "newline"}))>0:
+                    newline="yes"
                 tline(line.strip("\n", letters, newline))
             
 '***6***'
@@ -491,7 +500,7 @@ def tinput(input_string):
 def varcheck(var=""):
     if var!="":
         try:
-            print(f"""The value of {var} is {eval(var)}, a(n) {str(type(eval(var))).strip("<cla>").replace("s", "", 2).replace(" ", "").replace("'", "")}.""")
+            print(f"""The value of {var} is {eval(var)}, type {str(type(eval(var))).strip("<cla>").replace("s", "", 2).replace(" ", "").replace("'", "")}.""")
         except:
             print(f"The value of {var} is undefined!")
         return
@@ -501,7 +510,7 @@ def varcheck(var=""):
         return
     else:
         try:
-            print(f"""The value of {var} is {eval(var)}, a(n) {str(type(eval(var))).strip("<cla>").replace("s", "", 2).replace(" ", "").replace("'", "")}.""")
+            print(f"""The value of {var} is {eval(var)}, type {str(type(eval(var))).strip("<cla>").replace("s", "", 2).replace(" ", "").replace("'", "")}.""")
         except:
             print(f"The value of {var} is undefined!")
     var=""
