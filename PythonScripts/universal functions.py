@@ -11,7 +11,7 @@ global screensize
 global endbreak
 global score #game score?
 global divi #used for divi
-global path #path to project folder
+global path_to_directory #path to project folder
 divi={"1":"Please divi values", "2":"It would be so great", "3":"Please!"}
 
 '''
@@ -160,7 +160,7 @@ def r(first_value, second_value=""): #shorthand for random
 
 '***3***'
 def pimport(directory, mode="r"): #open file in specified mode and return contents if read mode
-    m=path+directory #path is calibrated at start, dire leads from path to file, m is now whole path
+    m=path_to_directory+directory #path_to_directory is calibrated at start, dire leads from path to file, m is now whole path
     m=open(m, str(mode)) #open file at m in given mode
     if mode=="r": #if read mode, add .read()
         m=m.read()
@@ -176,7 +176,7 @@ def txtfile(directory, modifier_list): #for printing text files line by line at 
         sprint("?, modlist - Opens this menu")
         sprint("w, words - Prints by words.")
         sprint("nl, newline - Prints text on a new line.")
-    for line in open(path+directory): #per line in file given
+    for line in open(path_to_directory+directory): #per line in file given
         try: #try and execute the line
             exec(line)
         except: #if not executable, tline it, and strip the newline character
@@ -466,30 +466,38 @@ def testforvalue(variable, default_value, replace="no"):
         exec("global "+variable+"\ntry:\n "+variable+"\nexcept:\n "+variable+"="+str(default_value))
 
 '***x2**'
-def slowprint(input_string, words_or_letters="letters", newline="yes"):
-    if words_or_letters.lower() in ["words", "w"]:
+def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes"):
+    space=""
+    if words_letters_or_lines.lower() in ["words", "w"]:
         input_string=input_string.split(" ")
         space=" "
-    else:
-        space=""
+    elif words_letters_or_lines.lower() in ["lines", "l"]:
+        input_string=input_string.split("\n")
     testforvalue("charbreak", 0.03)
     testforvalue("endbreak", 0.8)
     slen=len(input_string)
     for i in range(0, slen):
+        if words_letters_or_lines.lower() in ["lines", "l"]:
+            space="\n"
         print(input_string[i], end=space)
         if input_string[i].endswith("\n"):
-            t(endbreak)
+            if slow:
+                t(endbreak)
         else:
-            t(len(input_string[i])*charbreak)
-    t(endbreak)
+            if slow:
+                t(len(input_string[i])*charbreak)
+    if slow:
+        t(endbreak)
+    else:
+        print(endbreak)
     if newline=="yes":
         print("")
 
 '**x2a**'
 def tline (input_string, words_or_letters="letters", newline="yes"):
-    slowprint(input_string, words_or_letters, newline)
+    sprint(input_string, words_or_letters, newline)
 def sprint (input_string, words_or_letters="letters", newline="yes"):
-    slowprint(input_string, words_or_letters, newline)
+    fprint(input_string, True, words_or_letters, newline)
 
 '***x3***'
 def tinput(input_string):
