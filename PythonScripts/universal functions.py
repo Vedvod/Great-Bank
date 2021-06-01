@@ -189,20 +189,20 @@ def txtfile(directory, modifier_list): #for printing text files line by line at 
             
 '***6***'
 def clear(number_of_clears=1): #to clear screen without os.system(clr) or whatever
-    global screensize #global variable
+    global screen_height #global variable
     try: #attempt to use screensize, fails if not defined
-        screensize*=number_of_clears
-        remain=screensize%5 #find remainder lines
+        screen_height*=number_of_clears
+        remain=screen_height%5 #find remainder lines
     except: #if screensize not defined
         print("Screensize is not defined!")
         print("Defaulting to 64 lines.")
-        screensize=64*number_of_clears
-        remain=screensize%5
+        screen_height=64*number_of_clears
+        remain=screen_height%5
     try: #if remainder ≠ 0
         (remain)/(remain) #0 not divisible by 0
-        reps=int((screensize-remain)/5) #get nearest (lower) multiple of 5
+        reps=int((screen_height-remain)/5) #get nearest (lower) multiple of 5
     except: #if remainder = 0
-        reps=int(screensize/5)
+        reps=int(screen_height/5)
     for i in range(reps): #print screensize lines (5*reps + remain)
         print("", end=5*"\n") #print the multiples
     print("", end=remain*"\n") #print the extra
@@ -264,9 +264,12 @@ def checktype(value): #makes input type into int or float if possible
     return value
 
 '***11**'           
-def checkintype(input_string, list_of_types): #repeat until an input is of required type
+def checkintype(input_string, list_of_types, letter="", slow=True): #repeat until an input is of required type
     stringlist=[]
-    iner=checktype(tinput(input_string)) #make iner a float or int if possible
+    if slow==True:
+        iner=checktype(tinput(input_string, letter)) #make iner a float or int if possible
+    else:
+        iner=checktype(input(input_string))
     for value in list_of_types:
         if type(iner)==value: #if type of input matches requirement
             return iner #return and end strings
@@ -276,7 +279,7 @@ def checkintype(input_string, list_of_types): #repeat until an input is of requi
             return float(iner)
     print(str(type(iner)).strip("<cla>").replace("s", "", 2).replace(" ", "").replace("'", "")+" is incorrect type!") #print fail
     tline(liststring("Valid","",", ",stringlist)) #fail
-    return checkintype(input_string, list_of_types) #run again
+    return checkintype(input_string, list_of_types, letter, slow) #run again
 
 '***12**'
 def listfile(directory): #replace last value of a list in a given file with given value
@@ -500,8 +503,8 @@ def sprint (input_string, words_or_letters="letters", newline="yes"):
     fprint(input_string, True, words_or_letters, newline)
 
 '***x3***'
-def tinput(input_string):
-    tline(input_string, "l", "no")
+def tinput(input_string, letters=""):
+    sprint(input_string, letters, "no")
     return input("")
 
 '***x4***'
