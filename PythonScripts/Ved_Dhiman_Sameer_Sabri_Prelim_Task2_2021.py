@@ -84,12 +84,17 @@ def calibsize():
     screen_height=int(checkintype("What is the largest number on the screen right now? Part of the number showing is counted. ", [int], "", False))+1 #ask for calibration
     tline("Your screen height has been callibrated to "+str(screen_height-1)+" lines. Please do not change the screen size or text size unless prompted.") #confirm message
     clear() #clear
-    for i in range(1, 151):
+    for i in range(1, 80):
         print(filler(i, 4, "before"), end="")
     print("")
     global screen_width #global screensize
+    while True:
     screen_width=int(checkintype("What is the last number on the first line? If part of the number shows, or the number is immediately on the next line, add 0.5 to the previous number. ", [int, float])*4) #ask for calibration
-    tline("Your screen width has been callibrated to "+str(screen_width)+" lines. Please do not change the screen size or text size unless prompted.") #confirm message
+    if screen_width/4<36.5:
+        sprint("This is too small a size. Please choose a larger size.")
+    else:
+        sprint("Your screen width has been callibrated to "+str(screen_width)+" lines. Please do not change the screen size or text size unless prompted.") #confirm message
+        break
 global screen_height
 calibsize()
 def local():
