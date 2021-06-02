@@ -91,7 +91,7 @@ def calibsize():
     while True:
          screen_width=int(checkintype("What is the last number on the first line? If part of the number shows, or the number is immediately on the next line, add 0.5 to the previous number. ", [int, float])*4) #ask for calibration
         if screen_width/4<36.5:
-            sprint("This is too small a size. Please choose a larger size.")
+            sprint("This is too small a size. Please adjust your window width until at a width of at least 36.")
         else:
             sprint("Your screen width has been callibrated to "+str(screen_width)+" lines. Please do not change the screen size or text size unless prompted.") #confirm message
             break
