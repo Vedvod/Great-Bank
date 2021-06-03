@@ -33,7 +33,7 @@ Implemented Working Functions
                 #if mode is r, .read() the file
                 #then, return file
 
-  4 #reserved for tline (new)
+  4 #correctcaps
 
   5 #txtfile(directory) - open a file at directory specified and execute or print per line
         #add path and directory together, then open file at location
@@ -167,7 +167,58 @@ def pimport(directory, mode="r"): #open file in specified mode and return conten
     return m
 
 '***4***'
+def correctcaps(string, all=""): #a function to correct the capitalisation of a given string, typically multi-sentence.
+    final="" #define final as a string
+    dotsplit=string.lower().replace(".", "*.").replace("?", "^?").replace("!", "@!").replace(" ", "`` ").split(".") #add markers for punctuation, then split on dots
+    quesplit=[]
+    if all=="y":
+        plasplit=[]
+        for split in dotsplit:
+            split=split.strip().split(" ")[:len(split)]
+            plasplit+=split
+        dotsplit=plasplit
+    for split in dotsplit:
+        split=split.strip().split("?")[:len(split)]
+        quesplit+=split
+    excasplit=[]
+    for split in quesplit:
+        excasplit+=split.strip().split("!")[:len(split)]
+    for split in excasplit:
+        if split=="":
+            continue
+        split=split.strip()
+        finsentence=split[0].upper()
+        capital=False
+        count=1
+        for letter in split[1:]:
+            count+=1
+            if capital:
+                letter=letter.upper()
+                capital=False
 
+            if letter=="~":
+                capital=True
+                continue
+            try:
+                if split[count]+split[count+1]=="i ":
+                    capital=True
+            except:
+                ""
+            finsentence+=letter
+        final+=finsentence
+        if finsentence.endswith("^"):
+            final=final.rstrip("^")
+            final+="? "
+        elif finsentence.endswith("*"):
+            final=final.rstrip("*")
+            final+=". "
+        if finsentence.endswith("``"):
+            final=final.rstrip("``")
+            final+=" "
+        elif finsentence.endswith("@"):
+            final=final.rstrip("@")
+            final+="! "
+    return (final.strip())
 
 '***5***'
 def txtfile(directory, modifier_list): #for printing text files line by line at reading pace
