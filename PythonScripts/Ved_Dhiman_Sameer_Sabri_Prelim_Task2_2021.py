@@ -234,7 +234,7 @@ def login():
     userdic = {}
     for combo in userlist:
       try:
-        name, pin = combo.split(",")
+        name, pin, balance = combo.split(",")
         userdic[name] = pin.strip("\n")
       except:
         ""
@@ -245,7 +245,7 @@ def login():
         return register(username, userdic)
     if tinput("What is the PIN? ").strip()==userdic[username]:
         sprint(f"User {correctcaps(username, 'y')} successfully logged in.")
-        return username
+        return username, balance
     sprint("This is not the correct PIN. Please try again.")
     local()
     return login()
@@ -273,8 +273,7 @@ def register(username, userdic):
     local()
     return register(username, userdic)
 
-def menu(user):
-    testforvalue("balance", 1000)
+def menu(user, balance):
     clear()
     logo(31)
     sprint(f"Hello, {correctcaps(user, 'y')}. Your current balance is ${balance}\n")
@@ -297,5 +296,5 @@ def menu(user):
         sys.exit(f"{correctcaps(user)} logged out, shutting down...")
     print(f"Run: {choice_input}")
     
-logged_in=login()
-menu(logged_in)
+logged_in, balance=login()
+menu(logged_in, balance)
