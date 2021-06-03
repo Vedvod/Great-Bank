@@ -33,7 +33,7 @@ Implemented Working Functions
                 #if mode is r, .read() the file
                 #then, return file
 
-  4 #reserved for tline (new)
+  4 #correctcaps
 
   5 #txtfile(directory) - open a file at directory specified and execute or print per line
         #add path and directory together, then open file at location
@@ -167,7 +167,58 @@ def pimport(directory, mode="r"): #open file in specified mode and return conten
     return m
 
 '***4***'
+def correctcaps(string, all=""): #a function to correct the capitalisation of a given string, typically multi-sentence.
+    final="" #define final as a string
+    dotsplit=string.lower().replace(".", "*.").replace("?", "^?").replace("!", "@!").replace(" ", "`` ").split(".") #add markers for punctuation, then split on dots
+    quesplit=[]
+    if all=="y":
+        plasplit=[]
+        for split in dotsplit:
+            split=split.strip().split(" ")[:len(split)]
+            plasplit+=split
+        dotsplit=plasplit
+    for split in dotsplit:
+        split=split.strip().split("?")[:len(split)]
+        quesplit+=split
+    excasplit=[]
+    for split in quesplit:
+        excasplit+=split.strip().split("!")[:len(split)]
+    for split in excasplit:
+        if split=="":
+            continue
+        split=split.strip()
+        finsentence=split[0].upper()
+        capital=False
+        count=1
+        for letter in split[1:]:
+            count+=1
+            if capital:
+                letter=letter.upper()
+                capital=False
 
+            if letter=="~":
+                capital=True
+                continue
+            try:
+                if split[count]+split[count+1]=="i ":
+                    capital=True
+            except:
+                ""
+            finsentence+=letter
+        final+=finsentence
+        if finsentence.endswith("^"):
+            final=final.rstrip("^")
+            final+="? "
+        elif finsentence.endswith("*"):
+            final=final.rstrip("*")
+            final+=". "
+        if finsentence.endswith("``"):
+            final=final.rstrip("``")
+            final+=" "
+        elif finsentence.endswith("@"):
+            final=final.rstrip("@")
+            final+="! "
+    return (final.strip())
 
 '***5***'
 def txtfile(directory, modifier_list): #for printing text files line by line at reading pace
@@ -189,20 +240,20 @@ def txtfile(directory, modifier_list): #for printing text files line by line at 
             
 '***6***'
 def clear(number_of_clears=1): #to clear screen without os.system(clr) or whatever
-    global screensize #global variable
+    global screen_height #global variable
     try: #attempt to use screensize, fails if not defined
-        screensize*=number_of_clears
-        remain=screensize%5 #find remainder lines
+        screen_height*=number_of_clears
+        remain=screen_height%5 #find remainder lines
     except: #if screensize not defined
         print("Screensize is not defined!")
         print("Defaulting to 64 lines.")
-        screensize=64*number_of_clears
-        remain=screensize%5
+        screen_height=64*number_of_clears
+        remain=screen_height%5
     try: #if remainder ≠ 0
         (remain)/(remain) #0 not divisible by 0
-        reps=int((screensize-remain)/5) #get nearest (lower) multiple of 5
+        reps=int((screen_height-remain)/5) #get nearest (lower) multiple of 5
     except: #if remainder = 0
-        reps=int(screensize/5)
+        reps=int(screen_height/5)
     for i in range(reps): #print screensize lines (5*reps + remain)
         print("", end=5*"\n") #print the multiples
     print("", end=remain*"\n") #print the extra
@@ -503,8 +554,8 @@ def sprint (input_string, words_or_letters="letters", newline="yes"):
     fprint(input_string, True, words_or_letters, newline)
 
 '***x3***'
-def tinput(input_string, letter=""):
-    sprint(input_string, letter, "no")
+def tinput(input_string, letters=""):
+    sprint(input_string, letters, "no")
     return input("")
 
 '***x4***'
