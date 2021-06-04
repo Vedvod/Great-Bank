@@ -5,13 +5,11 @@ import random
 from os import system, name
 from time import sleep
 
+
 granted = False
 def grant():
   global granted
   granted = True
-
-def menu():
-  pass
 
 def reading_sleep():
     #sleep for 5 is fucntion i use frequently within my code for the theory section
@@ -23,15 +21,14 @@ def normal_sleep():
     #So i have decided to shorted the process and make it a function
     sleep(0.5)
 
-def clear():
-    # define our clear function
-    # for windows
-    if name == 'nt':
+def wipe():
+    if os.name != 'posix':
+        # Else Operating System is Windows (os.name = nt)
         _ = os.system('cls')
-
-    # for mac and linux(here, os.name is 'posix')
+    # Check if Operating System is Mac and Linux or Windows
     else:
         _ = os.system('clear')
+
 
 def login(name,password):
   valid = False
@@ -75,7 +72,7 @@ def login(name,password):
   if(valid):
     print("Login successful") #Displays the login was successful
 
-    clear() #clears screen for improved
+    wipe() #clears screen for improved
             #readability
 
     grant() #The grant function changes
@@ -102,11 +99,11 @@ def register(name,password):
 
   file.close() #closes the file
 
-  clear() #clears the screen
+  wipe() #clears the screen
 
   login(name,password) #runs the login function
 
-  clear() #clears the screen
+  wipe() #clears the screen
 
   grant() #runs the grant function
 
@@ -121,30 +118,57 @@ def begin():
   option = input("Login or Register (Login,Reg): ") #Prompts user to input either
                                                     #Login or Reg
 
-  if option != "Login" and option != "Reg": #this makes sure the user
+  if option != "Login" and option != "Reg": #this ma kes sure the user
                                             #can only input Login or Reg
 
-    clear() #Clears the screen
+    wipe() #Clears the screen
 
     begin() #makes the begin function start
             #again until the desired input
             #is reached
 
 def acess():
-  global name
-  if (option == "Login"):
-    name = input("Enter your name: ")
-    password = input("Enter your password: ")
-    login(name,password)
-  else:
-    print("Please enter you name and password to register")
-    name = input("Enter your name: ")
-    password = input("Enter a password: ")
-    register(name,password)
-    
-begin()
-acess()
+  global name #makes option a global
+              #variablw which can be
+              #accesssed in any part
+              #of the code
 
-if(granted):
-  print("Welcome to the Great Bank")
-  print("Username: ", name)
+  if (option == "Login"): #Checks what the user has input
+                          #and runs the next script based on
+                          #what they chose
+
+    name = input("Enter your name: ") #prompts the user to input
+                                      #their name
+
+    password = input("Enter your password: ") #prompts the user to input
+                                              #their password
+
+    login(name,password) #runs the login function
+
+  else: #Checks what the user has input
+        #and runs the next script based on
+        #what they chose
+
+    print("Please enter you name and password to register") #Tells the user to enter their
+                                                            #name and password
+
+    name = input("Enter your name: ") #prompts the user to input
+                                      #their name
+
+    password = input("Enter a password: ") #prompts the user to input
+                                           #their password
+
+    register(name,password) #runs the register function
+
+begin() #runs begin function
+acess() #runs acess function
+
+if(granted): #if the user has successfully
+             #logged in then granted should
+             #now be true. So they can now
+             #access the next part of the
+             #program
+
+  print("Welcome to the Great Bank") #displays welcome to great bank
+
+  print("Username: ", name) #displays their username
