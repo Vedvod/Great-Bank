@@ -33,7 +33,7 @@ Implemented Working Functions
                 #if mode is r, .read() the file
                 #then, return file
 
-  4 #reserved for tline (new)
+  4 #correctcaps
 
   5 #txtfile(directory) - open a file at directory specified and execute or print per line
         #add path and directory together, then open file at location
@@ -142,6 +142,8 @@ Legacy functions (redundant/no longer in use, but still interesting/stupid)
  L2 #start (old) - Old system of start, ask user for directory of main folder
 '''
 
+
+
 '***1***'
 def t(time_to_sleep_for): #shorthand for my sanity
     try:
@@ -167,7 +169,58 @@ def pimport(directory, mode="r"): #open file in specified mode and return conten
     return m
 
 '***4***'
+def correctcaps(string, modlist=[]): #a function to correct the capitalisation of a given string, typically multi-sentence.
+    final="" #define final as a string
+    dotsplit=string.lower().replace(".", "*.").replace("?", "^?").replace("!", "@!").replace(" ", "`` ").split(".") #add markers for punctuation, then split on dots
+    quesplit=[]
+    if "all" in modlist:
+        plasplit=[]
+        for split in dotsplit:
+            split=split.strip().split(" ")[:len(split)]
+            plasplit+=split
+        dotsplit=plasplit
+    for split in dotsplit:
+        split=split.strip().split("?")[:len(split)]
+        quesplit+=split
+    excasplit=[]
+    for split in quesplit:
+        excasplit+=split.strip().split("!")[:len(split)]
+    for split in excasplit:
+        if split=="":
+            continue
+        split=split.strip()
+        finsentence=split[0].upper()
+        capital=False
+        count=1
+        for letter in split[1:]:
+            count+=1
+            if capital:
+                letter=letter.upper()
+                capital=False
 
+            if letter=="~":
+                capital=True
+                continue
+            try:
+                if split[count]+split[count+1]=="i ":
+                    capital=True
+            except:
+                ""
+            finsentence+=letter
+        final+=finsentence
+        if finsentence.endswith("^"):
+            final=final.rstrip("^")
+            final+="? "
+        elif finsentence.endswith("*"):
+            final=final.rstrip("*")
+            final+=". "
+        if finsentence.endswith("``"):
+            final=final.rstrip("``")
+            final+=" "
+        elif finsentence.endswith("@"):
+            final=final.rstrip("@")
+            final+="! "
+    return (final.strip())
 
 '***5***'
 def txtfile(directory, modifier_list): #for printing text files line by line at reading pace
@@ -208,12 +261,82 @@ def clear(number_of_clears=1): #to clear screen without os.system(clr) or whatev
     print("", end=remain*"\n") #print the extra
         
 '***7***'
-def start(name_of_script="Please enter a name, you idiot"): #pre-script
+def wipe():
+    try:
+        a=open("C:/Users/vedvo/3D Objects/noclear.txt")
+        a.close()
+        clear()
+    except:
+        if os.name != 'posix':
+            # Else Operating System is Windows (os.name = nt)
+            _ = os.system('cls')
+        # Check if Operating System is Mac and Linux or Windows
+        else:
+            _ = os.system('clear')
+
+def calibsize(): #function to get user to calibrate their screen size for later usage
+    if checkinput("Do you want to quick calibrate the screen size? ") in ["y", "yes"]: #negative response
+        chose_size=checkinput("Choose a screen default from 'small', 'medium', and 'large': ", ["small", "s", "medium", "m", "large", "l"])
+        global screen_height
+        screen_height=64
+        wipe()
+        if chose_size in ["small", "s"]:
+            screen_height=37 #default height
+            screen_width=32*4 #default width
+        elif chose_size in ["medium", "m"]:
+            screen_height=49 #default height
+            screen_width=40*4 #default width
+        elif chose_size in ["large", "l"]:
+            screen_height=60 #default height
+            screen_width=48*4 #default width
+        print("0") #reference
+        for i in range(screen_height, 4, -1): #script to callibrate screensize
+            print("") #space on screen
+        for i in range(screen_width+1):
+            print("0", end="") #print a bunch of 0s
+        print("\nAdjust the screen height until the top zero is fully on the screen.")
+        print("Then, adjust the screen width until all the bottom zeroes are on one line.")
+        input('Press Enter when done, or type "cancel" to pick another size')
+        return screen_width, screen_height #end
+    for i in range(91, 0, -1): #script to callibrate screensize
+        print(i) #countdown on screen
+    global charbreak #
+    olc=charbreak #preserve
+    charbreak=0.001
+    global endbreak
+    ole=endbreak
+    endbreak=0.09
+    while True:
+        screen_height=int(checkintype("What is the largest number on the screen right now? Part of the number showing is counted. ", [int], "", False))+1 #ask for calibration
+        if screen_height<32: #height minimum
+            sprint("This is too small a size, please adjust your window until at least 32 is visible when the line above is the bottom of the window. ") #retry message
+            continue
+        tline("Your screen height has been callibrated to "+str(screen_height-1)+" lines. Please do not change the screen size or text size unless prompted.") #confirm message
+        break
+    wipe() #clear
+    for i in range(1, 80):
+        print(filler(i, 4, "before"), end="")
+    print("")
+    while True:
+        screen_width=int(checkintype("What is the last number on the first line? If part of the number shows, or the number is immediately on the next line, add 0.5 to the previous number. ", [int, float])*4) #ask for calibration
+        if screen_width/4<32:
+            sprint("This is too small a size. Please adjust your window width until at a width of at least 32.")
+        else:
+            sprint("Your screen width has been callibrated to "+str(screen_width)+" spaces. Please do not change the screen size or text size unless prompted.") #confirm message
+            break
+    charbreak=olc
+    endbreak=ole
+    return screen_width, screen_height
+
+def start(name_of_script="A nameless script, which you forgot to enter a value for has been"): #pre-script
+    global screen_width
+    global screen_size
+    screen_width, screen_height=calibsize()
     score=0 #idk
-    print("Loading, definitely not just listing numbers") #of course
+    print("Loading...") #of course
     i=0 #to set i as 0
     while i<100: #while "percent loaded" less than 100
-        m=r(1, 37) #choose random number between 1 and 37 to be "loaded" percentage
+        m=r(1, 63) #choose random number between 1 and 37 to be "loaded" percentage
         if i+m>=100: #if "loaded" percent plus already loaded is over 100
             m=100-i #m becomes value required to reach 100
             i=100 #i becomes 100

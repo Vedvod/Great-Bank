@@ -1,2 +1,2 @@
 # Great-Bank
-It is a great bank
+This repository is a storage for the files of our SDD Assignment 2 task
