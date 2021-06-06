@@ -21,33 +21,114 @@ except: #otherwise, run
         modfilepath=(filepath.replace(chr(92),"/")).split("/")
         
         for step in modfilepath: #increment directory to locate which one universal functions is in
-            if count==0: #ignore first, which is a "" or a "D:"
-                count=1 #stop ignoring
-                segment.append("")
-                continue
-            segment.append(step) #adds step to path
-            try: #attempt to find and run universal functions in given directory
-                exec(open("/".join(segment)+"/universal functions.py").read()) #try to open universal functions
-                global path_to_directory #sets global path file to the user-chosen path
-                path_to_directory="/".join(segment)
-                break #end loop since universal functions located
-            except: #if can not open universal functions file
-                continue
-        try: #test if previous loop actually found the file
-            open(path_to_directory+"/universal functions.py", "r").read() #open it
-            return open(path_to_directory+"/universal functions.py", "r").read() #return the opened file, since function is executed
-        except: #if can not find file
-            sys.exit("It seems that the universal functions file cannot run!") #error message, ends script
-    exec(findpath()) #if not fail, executes universal function
 ############################################################################
-#All above uses os module to locate the project folder using user input
-    #It then opens universal functions using this path
+try: #when a function is called and it is
+     #not defined inside the code
+     #then this program will execute the
+     #findpath() function
 
-import os
-import sys
-import time
-global charbreak
-global endbreak
+    exec(findpath()) #This executes find path
+
+except: #if an error is thrown when the findpath()
+        #function is trying to be executed
+        #then the code under the except
+        #statement will run
+
+    def findpath(): #define the findpath() function
+
+        import os    #imports os module
+        import sys   #imports sys module
+        import time  #imports time module
+
+        #set variables
+        segment=[] #set segment to a list
+        count=0 #sets count to 0
+        dic={} #set dic to a dictionary
+        y=0 #sets y to comment
+
+        filepath=__file__ + "check universal functions" #get file path
+
+
+
+        modfilepath=(filepath.replace(chr(92),"/")).split("/") #translate windows to
+                                                               #macOS/linux if applicable,
+                                                               #by changing character 92 (\) to /
+                                                               #then, split on the /
+
+        for step in modfilepath: #increment directory to locate
+                                 # which one universal functions is in
+
+            if count==0: #ignore first, which
+                         # is a "" or a "D:"
+
+                count=1 #stop ignoring
+
+                continue #if count does not
+                         #equal 1
+                         #then the rest of
+                         #the code will be
+                         #skipped
+
+            segment.append(step) #Each step is the next
+                                 #/ in the path to the
+                                 #script
+                                 #These parts iterated and
+                                 #appended to the list 'segment'
+
+            try: #attempts to find and run
+                 #universal functions in
+                 #the given directory
+
+                exec(open("/".join(segment)+"/universal functions.py").read()) #tries to open
+                                                                               #universal functions
+
+                global path_to_directory #sets global path file
+                                         #to the user-chosen path
+
+                path_to_directory="/".join(segment) #joins every element of segment
+                                                    #which is a list with a / character
+                                                    #and this creates a path to main
+                                                    #directory
+
+
+                break #if the universal functions file
+                      # is found then the loop will end
+
+            except: #if it is not found the the
+                    #code will continue inside the loop
+
+                continue #this makes the code continue
+                         #the next try and except
+                         #statement
+
+        try: #if the path to directory is not defined
+             #then an exception will be thrown by python
+             #when this exception is thrown then the
+             #code under the except statement will run
+
+            open(path_to_directory+"/universal functions.py", "r").read() #opens it
+
+            return open(path_to_directory+"/universal functions.py", "r").read() #return the opened file,
+                                                                                 #since function is executed
+        except: #This is the code which will run when
+                #either universal functions does not
+                #exist or cannot be run
+            sys.exit("It seems that the universal functions file cannot run!") #this exits the code and displays
+                                                                               #"It seems that the universal
+                                                                               #functions file cannot run!"#defines function to find path#defines function to find path
+
+    exec(findpath()) #if the universal functions file
+                     #has been found then the findpath()
+                     #function will be executed
+
+############################################################################
+#All above uses os module to locate
+#the project folder using user input
+#It then opens universal functions
+#using this path
+
+global charbreak #comment
+global endbreak  #comment
 
 userlist = open("users.txt")
 userdic = {}
