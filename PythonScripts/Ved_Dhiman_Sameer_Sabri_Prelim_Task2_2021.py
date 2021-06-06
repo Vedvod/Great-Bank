@@ -76,7 +76,6 @@ def getbal(marker, mode="read", value=0):
             line=line.strip("\n")
             number, amount=line.split(",")
             number=int(number)
-            print(int(number), int(marker), int(number)==int(marker))
             if int(number)==int(marker):
                  return int(amount)
         
@@ -121,16 +120,13 @@ def deposit(user): #function to deposit
     if not choice%5 == 0 or not int(choice)>0:
         sprint("This amount is invalid! Only combinations of cash notes can be accepted! Please try again.")
         return deposit(user)
-    else:
+    elif choice%5==0:
         getbal(usernum[user], "write", balance+int(choice))
         sprint(f"You deposit ${choice} into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.")
-        if not os.path.exists(f"{path_to_directory}/receipts/{user}"):
-            os.makedirs(f"{path_to_directory}/receipts/{user}")
-        replacing=pimport(f"/receipts/{user}/receipt.txt", "w")
-        replacing.write("To be added in future")
-        replacing.close()
+        receipt(user, "deposit", choice)
 
-def logo(height_in): #a function to print the logo in the corner of the screen -Ved
+def logo(height_in, size="large", rtn="no"): #a function to print the logo in the corner of the screen -Ved
+    wipe()
     try:
         screen_width
     except:
@@ -142,7 +138,7 @@ def logo(height_in): #a function to print the logo in the corner of the screen -
     ole=endbreak #preserve endbreak
     endbreak=0 #no pause between lines
     gap=int(screen_width/80)*" " #find the gap from the side of the screen
-    sprint(f'''
+    log=(f'''
     {gap}+================================================+
     {gap}ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
     {gap}ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
@@ -161,7 +157,12 @@ def logo(height_in): #a function to print the logo in the corner of the screen -
     {gap}ǁ      GGG::::::GGG:::G     B::::::::::::::::B   ǁ
     {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
     {gap}+================================================+
-    ''', "l") #the logo
+    ''') #the logo
+    if size=="small":
+        log=("""+--------+\n  |::::::::|\n  |::Great:|\n  |::Bank::|\n  |::::::::|\n  +--------+""") #small logo
+    if rtn in ["y", "yes"]:
+        return log
+    sprint(log, "l")
     for j in range((screen_height-height_in)-int(screen_width/80)-19): #loop to space up the logo
         print("") #newlines
     endbreak=ole #reset endbreak
@@ -217,7 +218,6 @@ def local():
     ''')
     print(int((screen_height-40)/2)*"\n", end="")
     t(1)
-    wipe()
     begin()
 
 
@@ -248,7 +248,6 @@ def wipe():
 
 
 def login(name,password):
-  wipe()
   logo(1)
   if int(userdic[name])==int(password): #This checks if the login details are correct based on the dictionary made at start of script (and modified in register, maybe)
     sprint(f"{correctcaps(name, ['all'])} successfully logged in.") #Displays the login was successful
@@ -261,7 +260,7 @@ def login(name,password):
 
     sprint(f"This is not the PIN for user {correctcaps(name, ['all'])}. Please try again.") #displays that the user has
                                        #entered the wrong login details
-    access(name)
+    access("login", name)
 
 def register(name,password):
   file = open("users.txt","a") #a+ Opens a file for both appending and reading.
@@ -291,7 +290,6 @@ def register(name,password):
   login(name,password) #runs the login function
 
 def begin(something=""): #the beginning of the whole login thing
-  wipe()
   if something!="": #this is a check to see if a login/register decision has already been specified. If it has, run that and end.
     access(something)
     return
@@ -342,11 +340,56 @@ def access(option, name=""): #script to ask for username and password yes
     register(name,password) #runs the register function
 
 ################
+
+def receipt(user, transact, amount):
+    from datetime import datetime as dm
+    import os
+    now = dm.now() # current date and time
+    transactlog=(f'''
+  {logo(0, "small", "y")}
+
+
+  {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
+  Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
+  Transaction ID: {r(20000, 500000)}
+  User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
+  Transaction: {correctcaps(transact)} of ${amount}.
+  New Balance: {getbal(usernum[user])}
+
+  {dm.now().strftime('Great Bank inc. %Y')}''')
+
+    a=True
+    while a==True:
+        dic={}
+        for count in range(1,4):
+            try:
+                a=False
+                receipt=open(f"receipts/{user}/receipt {count}.txt", "x")
+                receipt.write(transactlog)
+                receipt.close()
+                break
+            except:
+                e=0
+                for line in open(f"receipts/{user}/receipt {count}.txt"):
+                    try:
+                        dic[line.strip("Date and Time: ").split(" ")[2]]=count
+                        break
+                    except:
+                        e+=1
+                count+=1
+        if a==True:
+            lis=[]
+            for element in dic:
+                lis.append(element)
+                lis=sorted(lis)
+            count=dic[lis[0]]
+            receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
+            receipt.write(transactlog)
+            receipt.close()
+
 def menu(user):
-  print(usernum[user])
   balance=getbal(usernum[user])
-  wipe() #clear
-  logo(8)
+  logo(10)
   sprint(f"Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.\n")
   sprint("""
   1: Deposit
@@ -368,8 +411,7 @@ def menu(user):
   print(f"Choice: {choice_input}")
   menu(user)
 
-#print(usernum["joe biden"])
-#print(getbal(3))
+wipe()
 start("The GREAT Bank")
 
 logo(1)
