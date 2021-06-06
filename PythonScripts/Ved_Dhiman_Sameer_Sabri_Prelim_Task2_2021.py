@@ -300,8 +300,13 @@ def access(option, name=""): #script to ask for username and password yes
   option=option.lower()
   wipe()
   logo(3)
-
+  if option=="l":
+      option="login"
+  elif option=="r":
+      option="register"
+      
   if name=="":
+    
     print(f"\n{correctcaps(option)}:")
     name = tinput("""Enter your name, or "cancel" to cancel: """).lower() #prompts the user to input their name
   if name=="cancel":
