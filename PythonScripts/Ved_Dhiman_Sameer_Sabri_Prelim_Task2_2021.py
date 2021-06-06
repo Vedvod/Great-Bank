@@ -40,6 +40,8 @@ except: #if an error is thrown when the findpath()
 
                 count=1 #stop ignoring
 
+                segment.append("") #adds an extra / to the start of the path
+                
                 continue #if count does not
                          #equal 1
                          #then the rest of
@@ -56,7 +58,7 @@ except: #if an error is thrown when the findpath()
                  #universal functions in
                  #the given directory
 
-                exec(open("/".join(segment)+"/universal functions.py").read()) #tries to open
+                exec(open(str("/".join(segment)+"/universal functions.py")).read()) #tries to open
                                                                                #universal functions
 
                 global path_to_directory #sets global path file
@@ -362,6 +364,8 @@ def access(option, name=""): #script to ask for username and password yes
       option="login"
   elif option=="r":
       option="register"
+  elif option=="d":
+      option="delete"
       
   if name=="":
     
@@ -371,6 +375,16 @@ def access(option, name=""): #script to ask for username and password yes
       begin()
       return
 
+  if option in ["delete", "d"]:
+
+    global usernum
+    if int(tinput(f"To delete {name}, enter the PIN."))==userdic[name]:
+        file = open("users.txt").readlines() #a+ Opens a file for both appending and reading.
+        file = file[file.index("**"):]
+        file.pop(usernum[name]-1)
+        print(file)
+        sys.exit("thanks lol")
+      
   if option in ["login", "l"] : #Checks what the user has input
                           #and runs the next script based on
                           #what they chose
@@ -422,7 +436,7 @@ def receipt(user, transact, amount):
   {dm.now().strftime('Great Bank inc. %Y')}''')
 
     a=True
-   if not os.path.exists(f"/receipts/{user}"):
+    if not os.path.exists(f"/receipts/{user}"):
        os.makedirs(f"/receipts/{user}")
     while a==True:
         dic={}
