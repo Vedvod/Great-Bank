@@ -1,27 +1,4 @@
 ############################################################################
-try: #if function defined, run it
-    exec(findpath()) #try run function
-except: #otherwise, run
-    def findpath(): #define function to find path
-        #import modules
-        import os
-        import sys
-        import time
-
-        #set variables
-        segment=[]
-        count=0
-        dic={}
-        y=0
-        #get file path
-        filepath=__file__ + "check universal functions"
-
-        #translate windows to macOS/linux if applicable, by changing character 92 (\) to /
-            #then, split on the /
-        modfilepath=(filepath.replace(chr(92),"/")).split("/")
-        
-        for step in modfilepath: #increment directory to locate which one universal functions is in
-############################################################################
 try: #when a function is called and it is
      #not defined inside the code
      #then this program will execute the
