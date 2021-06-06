@@ -1,60 +1,124 @@
 ############################################################################
-try: #if function defined, run it
-    exec(findpath()) #try run function
-except: #otherwise, run
-    def findpath(): #define function to find path
-        #import modules
-        import os
-        import sys
-        import time
+try: #when a function is called and it is
+     #not defined inside the code
+     #then this program will execute the
+     #findpath() function
+
+    exec(findpath()) #This executes find path
+
+except: #if an error is thrown when the findpath()
+        #function is trying to be executed
+        #then the code under the except
+        #statement will run
+
+    def findpath(): #define the findpath() function
+
+        import os    #imports os module
+        import sys   #imports sys module
+        import time  #imports time module
 
         #set variables
-        segment=[]
-        count=0
-        dic={}
-        y=0
-        #get file path
-        filepath=__file__ + "check universal functions"
+        segment=[] #set segment to a list
+        count=0 #sets count to 0
+        dic={} #set dic to a dictionary
+        y=0 #sets y to comment
 
-        #translate windows to macOS/linux if applicable, by changing character 92 (\) to /
-            #then, split on the /
-        modfilepath=(filepath.replace(chr(92),"/")).split("/")
-        
-        for step in modfilepath: #increment directory to locate which one universal functions is in
-            if count==0: #ignore first, which is a "" or a "D:"
+        filepath=__file__ + "check universal functions" #get file path
+
+
+
+        modfilepath=(filepath.replace(chr(92),"/")).split("/") #translate windows to
+                                                               #macOS/linux if applicable,
+                                                               #by changing character 92 (\) to /
+                                                               #then, split on the /
+
+        for step in modfilepath: #increment directory to locate
+                                 # which one universal functions is in
+
+            if count==0: #ignore first, which
+                         # is a "" or a "D:"
+
                 count=1 #stop ignoring
-                segment.append("")
-                continue
-            segment.append(step) #adds step to path
-            try: #attempt to find and run universal functions in given directory
-                exec(open("/".join(segment)+"/universal functions.py").read()) #try to open universal functions
-                global path_to_directory #sets global path file to the user-chosen path
-                path_to_directory="/".join(segment)
-                break #end loop since universal functions located
-            except: #if can not open universal functions file
-                continue
-        try: #test if previous loop actually found the file
-            open(path_to_directory+"/universal functions.py", "r").read() #open it
-            return open(path_to_directory+"/universal functions.py", "r").read() #return the opened file, since function is executed
-        except: #if can not find file
-            sys.exit("It seems that the universal functions file cannot run!") #error message, ends script
-    exec(findpath()) #if not fail, executes universal function
-############################################################################
-#All above uses os module to locate the project folder using user input
-    #It then opens universal functions using this path
 
-import os
-import sys
-import time
-global charbreak
-global endbreak
+                continue #if count does not
+                         #equal 1
+                         #then the rest of
+                         #the code will be
+                         #skipped
+
+            segment.append(step) #Each step is the next
+                                 #/ in the path to the
+                                 #script
+                                 #These parts iterated and
+                                 #appended to the list 'segment'
+
+            try: #attempts to find and run
+                 #universal functions in
+                 #the given directory
+
+                exec(open("/".join(segment)+"/universal functions.py").read()) #tries to open
+                                                                               #universal functions
+
+                global path_to_directory #sets global path file
+                                         #to the user-chosen path
+
+                path_to_directory="/".join(segment) #joins every element of segment
+                                                    #which is a list with a / character
+                                                    #and this creates a path to main
+                                                    #directory
+
+
+                break #if the universal functions file
+                      # is found then the loop will end
+
+            except: #if it is not found the the
+                    #code will continue inside the loop
+
+                continue #this makes the code continue
+                         #the next try and except
+                         #statement
+
+        try: #if the path to directory is not defined
+             #then an exception will be thrown by python
+             #when this exception is thrown then the
+             #code under the except statement will run
+
+            open(path_to_directory+"/universal functions.py", "r").read() #opens it
+
+            return open(path_to_directory+"/universal functions.py", "r").read() #return the opened file,
+                                                                                 #since function is executed
+        except: #This is the code which will run when
+                #either universal functions does not
+                #exist or cannot be run
+            sys.exit("It seems that the universal functions file cannot run!") #this exits the code and displays
+                                                                               #"It seems that the universal
+                                                                               #functions file cannot run!"#defines function to find path#defines function to find path
+
+    exec(findpath()) #if the universal functions file
+                     #has been found then the findpath()
+                     #function will be executed
+
+############################################################################
+#All above uses os module to locate
+#the project folder using user input
+#It then opens universal functions
+#using this path
+
+global charbreak #comment
+global endbreak  #comment
 
 userlist = open("users.txt")
+
 userdic = {}
+
 usernum = {}
+
 for combo in userlist:
+
   try:
+
     name, pin, nextmark = combo.strip("\n").split(",")
+
     userdic[name] = pin.strip()
     nextmark=int(nextmark)
     usernum[name] = nextmark
@@ -76,6 +140,7 @@ def getbal(marker, mode="read", value=0):
             line=line.strip("\n")
             number, amount=line.split(",")
             number=int(number)
+            print(int(number), int(marker), int(number)==int(marker))
             if int(number)==int(marker):
                  return int(amount)
         
@@ -120,13 +185,16 @@ def deposit(user): #function to deposit
     if not choice%5 == 0 or not int(choice)>0:
         sprint("This amount is invalid! Only combinations of cash notes can be accepted! Please try again.")
         return deposit(user)
-    elif choice%5==0:
+    else:
         getbal(usernum[user], "write", balance+int(choice))
         sprint(f"You deposit ${choice} into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.")
-        receipt(user, "deposit", choice)
+        if not os.path.exists(f"{path_to_directory}/receipts/{user}"):
+            os.makedirs(f"{path_to_directory}/receipts/{user}")
+        replacing=pimport(f"/receipts/{user}/receipt.txt", "w")
+        replacing.write("To be added in future")
+        replacing.close()
 
-def logo(height_in, size="large", rtn="no"): #a function to print the logo in the corner of the screen -Ved
-    wipe()
+def logo(height_in): #a function to print the logo in the corner of the screen -Ved
     try:
         screen_width
     except:
@@ -138,7 +206,7 @@ def logo(height_in, size="large", rtn="no"): #a function to print the logo in th
     ole=endbreak #preserve endbreak
     endbreak=0 #no pause between lines
     gap=int(screen_width/80)*" " #find the gap from the side of the screen
-    log=(f'''
+    sprint(f'''
     {gap}+================================================+
     {gap}ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
     {gap}ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
@@ -157,12 +225,7 @@ def logo(height_in, size="large", rtn="no"): #a function to print the logo in th
     {gap}ǁ      GGG::::::GGG:::G     B::::::::::::::::B   ǁ
     {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
     {gap}+================================================+
-    ''') #the logo
-    if size=="small":
-        log=("""+--------+\n  |::::::::|\n  |::Great:|\n  |::Bank::|\n  |::::::::|\n  +--------+""") #small logo
-    if rtn in ["y", "yes"]:
-        return log
-    sprint(log, "l")
+    ''', "l") #the logo
     for j in range((screen_height-height_in)-int(screen_width/80)-19): #loop to space up the logo
         print("") #newlines
     endbreak=ole #reset endbreak
@@ -218,6 +281,7 @@ def local():
     ''')
     print(int((screen_height-40)/2)*"\n", end="")
     t(1)
+    wipe()
     begin()
 
 
@@ -248,6 +312,7 @@ def wipe():
 
 
 def login(name,password):
+  wipe()
   logo(1)
   if int(userdic[name])==int(password): #This checks if the login details are correct based on the dictionary made at start of script (and modified in register, maybe)
     sprint(f"{correctcaps(name, ['all'])} successfully logged in.") #Displays the login was successful
@@ -260,7 +325,7 @@ def login(name,password):
 
     sprint(f"This is not the PIN for user {correctcaps(name, ['all'])}. Please try again.") #displays that the user has
                                        #entered the wrong login details
-    access("login", name)
+    access(name)
 
 def register(name,password):
   file = open("users.txt","a") #a+ Opens a file for both appending and reading.
@@ -290,6 +355,7 @@ def register(name,password):
   login(name,password) #runs the login function
 
 def begin(something=""): #the beginning of the whole login thing
+  wipe()
   if something!="": #this is a check to see if a login/register decision has already been specified. If it has, run that and end.
     access(something)
     return
@@ -300,13 +366,8 @@ def access(option, name=""): #script to ask for username and password yes
   option=option.lower()
   wipe()
   logo(3)
-  if option=="l":
-      option="login"
-  elif option=="r":
-      option="register"
-      
+
   if name=="":
-    
     print(f"\n{correctcaps(option)}:")
     name = tinput("""Enter your name, or "cancel" to cancel: """).lower() #prompts the user to input their name
   if name=="cancel":
@@ -345,56 +406,11 @@ def access(option, name=""): #script to ask for username and password yes
     register(name,password) #runs the register function
 
 ################
-
-def receipt(user, transact, amount):
-    from datetime import datetime as dm
-    import os
-    now = dm.now() # current date and time
-    transactlog=(f'''
-  {logo(0, "small", "y")}
-
-
-  {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
-  Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
-  Transaction ID: {r(20000, 500000)}
-  User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
-  Transaction: {correctcaps(transact)} of ${amount}.
-  New Balance: {getbal(usernum[user])}
-
-  {dm.now().strftime('Great Bank inc. %Y')}''')
-
-    a=True
-    while a==True:
-        dic={}
-        for count in range(1,4):
-            try:
-                a=False
-                receipt=open(f"receipts/{user}/receipt {count}.txt", "x")
-                receipt.write(transactlog)
-                receipt.close()
-                break
-            except:
-                e=0
-                for line in open(f"receipts/{user}/receipt {count}.txt"):
-                    try:
-                        dic[line.strip("Date and Time: ").split(" ")[2]]=count
-                        break
-                    except:
-                        e+=1
-                count+=1
-        if a==True:
-            lis=[]
-            for element in dic:
-                lis.append(element)
-                lis=sorted(lis)
-            count=dic[lis[0]]
-            receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
-            receipt.write(transactlog)
-            receipt.close()
-
 def menu(user):
+  print(usernum[user])
   balance=getbal(usernum[user])
-  logo(10)
+  wipe() #clear
+  logo(8)
   sprint(f"Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.\n")
   sprint("""
   1: Deposit
@@ -416,7 +432,8 @@ def menu(user):
   print(f"Choice: {choice_input}")
   menu(user)
 
-wipe()
+#print(usernum["joe biden"])
+#print(getbal(3))
 start("The GREAT Bank")
 
 logo(1)
