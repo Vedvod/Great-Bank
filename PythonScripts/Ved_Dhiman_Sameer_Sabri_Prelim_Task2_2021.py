@@ -422,6 +422,8 @@ def receipt(user, transact, amount):
   {dm.now().strftime('Great Bank inc. %Y')}''')
 
     a=True
+   if not os.path.exists(f"/receipts/{user}"):
+       os.makedirs(f"/receipts/{user}")
     while a==True:
         dic={}
         for count in range(1,4):
