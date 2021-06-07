@@ -1,3 +1,8 @@
+import os  # imports os module
+import sys  # imports sys module
+import time  # imports time module
+from datetime import datetime as dm
+
 ############################################################################
 try: #when a function is called and it is
      #not defined inside the code
@@ -12,10 +17,6 @@ except: #if an error is thrown when the findpath()
         #statement will run
 
     def findpath(): #define the findpath() function
-
-        import os    #imports os module
-        import sys   #imports sys module
-        import time  #imports time module
 
         #set variables
         segment=[] #set segment to a list
@@ -306,7 +307,6 @@ def wipe():
         else:
             _ = os.system('clear')
 
-
 def login(name,password):
   logo(1)
   if int(userdic[name])==int(password): #This checks if the login details are correct based on the dictionary made at start of script (and modified in register, maybe)
@@ -419,20 +419,15 @@ def access(option, name=""): #script to ask for username and password yes
 ################
 
 def receipt(user, transact, amount):
-    from datetime import datetime as dm
-    import os
     now = dm.now() # current date and time
     transactlog=(f'''
   {logo(0, "small", "y")}
-
-
   {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
   Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
   Transaction ID: {r(20000, 500000)}
   User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
   Transaction: {correctcaps(transact)} of ${amount}.
   New Balance: {getbal(usernum[user])}
-
   {dm.now().strftime('Great Bank inc. %Y')}''')
 
     a=True
@@ -440,6 +435,8 @@ def receipt(user, transact, amount):
        os.makedirs(f"/receipts/{user}")
     while a==True:
         dic={}
+        if not os.path.exists(f"receipts/{user}/"):
+            os.mkdir(f"receipts/{user}/")
         for count in range(1,4):
             try:
                 a=False
@@ -487,7 +484,6 @@ def menu(user):
       choice_input="Check Transactions"
   else:
       sys.exit("ok bye!")
-  print(f"Choice: {choice_input}")
   menu(user)
 
 wipe()
