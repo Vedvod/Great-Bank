@@ -1,0 +1,17 @@
+
+  +--------+
+  |::::::::|
+  |::Great:|
+  |::Bank::|
+  |::::::::|
+  +--------+
+
+
+  Date and Time: 06/07/21 at 10:19:28.
+  Location: E454E87A3796P branch, machine #3
+  Transaction ID: 242463
+  User: Ass, PIN: 6969
+  Transaction: Deposit of $243233424392439253983279592375970.
+  New Balance: 243233424392439253983279592375980
+
+  Great Bank inc. 2021
