@@ -107,64 +107,294 @@ except: #if an error is thrown when the findpath()
 #It then opens universal functions
 #using this path
 
-global charbreak #comment
-global endbreak  #comment
+global charbreak #makes charbread global
+global endbreak  #makes endbreak global
 
-userlist = open("users.txt")
-userdic = {}
-usernum = {}
-for combo in userlist:
-  try:
-    name, pin, nextmark = combo.strip("\n").split(",")
-    userdic[name] = pin.strip()
-    nextmark=int(nextmark)
-    usernum[name] = nextmark
-    nextmark+=1
-  except:
-   ""
+userlist = open("users.txt") #open the user.txt file
+
+userdic = {} #creates a dictionary for user name and password
+
+usernum = {} #and a dictionary for username and user number
+
+for combo in userlist: #combo is user name + pin
+  try: #tries the code underneath
+
+    name, pin, nextmark = combo.strip("\n").split(",") #split username and pin
+                                                       #on the basis of a comma
+    userdic[name] = pin.strip() #removes spaves the pin
+
+    nextmark=int(nextmark) #next mark is the
+                           #variable for the next id
+
+    usernum[name] = nextmark #Gives user a user
+                             #number
+
+    nextmark+=1 #Makes it so that the next
+                #user registered will obtain
+                #the next number
+
+  except: #If the code under the try
+          #statement throws an error
+          #or exception the code
+          #below will run This ]
+          #except statement catches
+          #all the lines in the .txt
+          #file which are not user
+          #credentials
+
+   "" #Except must run something
+      #as such to avoid an error
+      #an empty string must be
+      #run which will not effect
+      #the rest of the code
 
 charbreak=0.025 #set charbreak for slow
 endbreak=0.065 #set endbreak for slow
 
-def getbal(marker, mode="read", value=0):
-    balances=open("balances.txt")
-    if mode in ["r", "read"]:
-        for line in balances:
-            try:
-                line=line.split(": ")[1]
-            except:
-                ""
-            line=line.strip("\n")
-            number, amount=line.split(",")
-            number=int(number)
-            if int(number)==int(marker):
-                 return int(amount)
+def getbal(marker, mode="read", value=0): #Defines the function
+                                          #getbal - which means
+                                          #get balance
+
+                                          #It sets the parameters:
+                                          #marker, which will be equal to
+                                          #balance=getbal(usernum[user])
+                                          #the index inputed later on
+                                          #This index will be from the
+                                          #dictionary usernum and will
+                                          #be equal to the user id
+                                          #mode = "read" is the parameter
+                                          #which will specify which
+                                          #mode to open the balance in
+                                          #value is a parameter which will
+                                          #be the value of the balance
+                                          #which will be overwritten
+
+                                          #To use the function in conuntion
+                                          #with these parameters then it
+                                          #will look like - getbal(2, "write", 5000)
+                                          #The first argument in the parameter
+                                          #makes marker = 2
+                                          #the second argument makes
+                                          #the mode = "write"
+                                          #the third argument overwrites the
+                                          #balance to 5000
+
+
+
+    balances=open("balances.txt") #Opens the balances.txt file
+
+    if mode in ["r", "read"]: #Mode is thte optional parameter
+                              #for the open() function.
+                              #If no parameter is set then it
+                              #will default to open and
+                              #read the file
+
+        for line in balances: #Balanes is balances.txt file
+                              #check through every line to
+                              #see if it has an
+                              #actual balance attatched to it
+
+            try: #When there is a balance
+                 #attatched to the line the
+                 #code below the try
+                 #statement will run as
+                 #there will no error
+                 #or exception
+
+                line=line.split(": ")[1] #this will split balance
+                                         #and user idfrom
+                                         #the Username in the
+                                         #balances.txt file on the
+                                         #basis of the colon
+
+            except: #if there is no balance
+                    #on that line of the
+                    #balances.txt file then
+                    #an exception or error
+                    #will be thrown
+                    #When this happens the
+                    #code below the except
+                    #statement will run
+
+                "" #Except must run something
+                   #as such to avoid an error
+                   #an empty string must be
+                   #run which will not effect
+                   #the rest of the code
+
+            line=line.strip("\n") #gets rid of the new
+                                  #line character - \n -
+                                  #from the lines
+                                  #This is neccesary as in
+                                  #the following code the user
+                                  #id and balance will be
+                                  #split and put into a list as
+                                  #such the \n which is
+                                  #attached to the balance
+                                  #must be removed
+                                  #Because we want the balance
+                                  #to returned as an integer the
+                                  #/n must be removed in this
+                                  #process otherwise an exception
+                                  #will be thrown and the code
+                                  #will not run
+
+            number, amount=line.split(",") #This split the user id and
+                                           #the balance on the basis
+                                           #of , and seperates them
+                                           #into two different lists
+
+            number=int(number) #This converts the user
+                               #id into an integer
+
+            if int(number)==int(marker): #This checks if the user id is equal
+                                         #to the marker parameter which is
+                                         #defined in the function parameters
+                                         #above
+
+                 return int(amount) #When the two variables are
+                                    #equal the coresponding balance
+                                    #will be returned
+                                    #the amount variable is the balance
         
-    elif mode in ["w", "write"]:
-        baldic={}
-        for line in balances:
-            try:
-                line=line.split(": ")[1]
-            except:
-                ""
-            line=line.strip("\n")
-            try:
-                number, amount=line.split(",")
-                if int(number)==int(marker):
-                    amount=value
-                baldic[number]=amount
-            except:
-                ""
-        file=open("balances.txt", "w")
-        file.write("") #clears file
-        file.close()
-        file=open("balances.txt", "a")
-        for numb in baldic:
-            for elem in usernum:
-                if int(usernum[elem])==int(numb):
-                    break
-            file.write(f"{correctcaps(elem, ['all'])}: {numb},{baldic[numb]}\n")
-        file.close()
+    elif mode in ["w", "write"]: #This checks if the getbal() fuctions
+                                 #mode parameter has been set to
+                                 #"w" or "write"
+                                 #When this is the case the code below will run
+                                 #This will be neccessary when we set the mode
+                                 #parameter for the getbal() function inside
+                                 #the definition of the deposit() function
+                                 #def deposid():
+                                 #........
+                                 #getbal(usernum[user], "write", balance+int(choice))
+
+        baldic={} #Creates a dictionary called
+                  #baldic which means balance
+                  #dictionary
+
+        for line in balances: #This iterates throgh the
+                              #lines in the balances.txt
+                              #file
+
+            try: #This runs the code below when there
+                 #are no exceptions or error thrown
+
+                line=line.split(": ")[1] #This splits the line on the
+                                         #basis of ": " and takes the values
+                                         #and ingnore the ones on the left
+
+            except: #The code indented inside
+                    #the except statement will run
+                    #if an exception or error is
+                    #thrown when the code
+                    #indented inside the try
+                    #statement is run
+
+                "" #The except statement
+                   #must run something
+                   #as such to avoid an error
+                   #an empty string must be
+                   #run which will not effect
+                   #the rest of the code
+
+            line=line.strip("\n") #This removes the new line character
+                                  #from the end of the balance
+                                  #The balance will be assigned to the
+                                  #varible amount and turn into int(amount)
+                                  #later on as such this code is neccessary
+
+            try: #This runs the code below when there
+                 #are no exceptions or error thrown
+
+                number, amount=line.split(",") #This splits line on the basis of ","
+                                               #and assignes the two lists to
+                                               #the variables number and amount
+
+                if int(number)==int(marker): #This checks if the user id obtained
+                                             #from the balances.txt file is equal
+                                             #to the marker parameter set when
+                                             #calling the function
+
+                    amount=value #sets the amount variable
+                                 #to the value variable
+
+                baldic[number]=amount #adds the variable number:amount
+                                      #to the balance dictionary
+                                      #These two variables correspond
+                                      #to user id:balance
+            except: #The code indented inside
+                    #the except statement will run
+                    #if an exception or error is
+                    #thrown when the code
+                    #indented inside the try
+                    #statement is run
+
+                "" #The except statement
+                   #must run something
+                   #as such to avoid an error
+                   #an empty string must be
+                   #run which will not effect
+                   #the rest of the code
+
+        file=open("balances.txt", "w") #opens the balances.txt
+                                       #file in write mode
+
+        file.write("") #make the entire file
+                       #an empty string
+
+        file.close() #closes the file
+                     #so that the file
+                     #can save and be
+                     #accessed by other
+                     #users
+
+        file=open("balances.txt", "a") #opens the balances.txt
+                                       #file in append mode
+
+        for numb in baldic: #Iterates through the keys:value
+                            #pairs inside the baldic dictionary
+
+            for elem in usernum: #iterate through the key:value pairs
+                                 #inside the dictionary usernum which
+                                 #contains name:user id
+
+                if int(usernum[elem])==int(numb): #Checks if the value of the user
+                                                  #id obtained from the usernum
+                                                  #dictionary is equal to the
+                                                  #value obtained from the
+                                                  #baldic dictionary
+
+                    break #Ends the loop
+
+            file.write(f"{correctcaps(elem, ['all'])} : {numb},{baldic[numb]}\n")#Corects caps is a function which
+                                                                                 #capitalises the first character
+                                                                                 #in a string
+
+                                                                                 #This writes username and the list ['all']
+                                                                                 # and the user id and the balance to the
+                                                                                 #file with a colon in between them
+                                                                                 #a new line character - \n - also
+                                                                                 #added at the end
+
+
+                                                                                 #This is so that when in the above code the
+                                                                                 #line is split on the basis of the colon
+                                                                                 #it will not throw an exception or error
+
+                                                                                 #The new line character is added so that
+                                                                                 #the text is not all on the same line
+
+                                                                                 #The {} apply to the syntax of a f string
+                                                                                 #essentially everything inside the curly
+                                                                                 #brackets now becomes a string
+
+
+
+        file.close() #closes the file
+                     #so that the file
+                     #can save and be
+                     #accessed by other
+                     #users
 
 def deposit(user): #function to deposit
     balance=getbal(usernum[user])
