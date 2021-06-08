@@ -22,9 +22,9 @@ This repository is a storage for the files of our SDD Premlininary Course Assign
 The logo features the large initials GB, and the full name in small text below.
 
 # Instructions
-First, [download the ZIP file from the repository](https://github.com/Vedvod/Great-Bank/archive/refs/heads/Menu,-Login,-Deposit,-and-Receipts.zip), and extract the folder inside. The folder can be extracted to any location, as long as the hierarchy is not modified for the bat file and the Scripts folder. Then, run the Run-Me!.bat file. This will initiate the program. The script files are in the Scripts folder, and the documentation is within the main directory.  
+First, [download the ZIP file from the repository](https://github.com/Vedvod/Great-Bank/archive/refs/heads/Readability-and-Documentation.zip), and extract the folder inside. The folder can be extracted to any location, as long as the hierarchy is not modified for the bat file and the Scripts folder. Then, run the Run-Me!.bat file. This will initiate the program. The script files are in the Scripts folder, and the documentation is within the main directory.  
 Make sure to run the toggleclear.py file if running the script on an IDE that does not support os.system('clear'), such as IDLE, or PyCharm. This will substitute the screen clear for newlines, which, while less effective, will function properly for these IDEs.  
-Receipts from transactions can be found in the [receipts directory](https://github.com/Vedvod/Great-Bank/tree/Menu%2C-Login%2C-Deposit%2C-and-Receipts/PythonScripts/receipts) within the Scripts directory. Each user has three receipt slots, after which the oldest receipt will be overwritten.
+Receipts from transactions can be found in the [receipts directory](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation/PythonScripts/receipts) within the Scripts directory. Each user has three receipt slots, after which the oldest receipt will be overwritten.
 Our documentation can (will) be found on the [logbook document](https://docs.google.com/document/d/14dr7cmlmFfUxpMpVZmCA-mB59K0Lx-MyVKvaO-z-XV4/).  
   
 # Changelog  
