@@ -26,11 +26,12 @@ First, [download the ZIP file from the repository](https://github.com/Vedvod/Gre
 Make sure to run the [toggleclear.py file](https://github.com/Vedvod/Great-Bank/blob/Readability-and-Documentation/toggleclear.py) if running the script on an IDE that does not support os.system('clear'), such as IDLE, or PyCharm. This will substitute the screen clear for newlines, which, while less effective, will function properly for these IDEs.  
 Receipts from transactions can be found in the [receipts directory](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation/Scripts/receipts) within the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation/Scripts). Each user has three receipt slots, after which the oldest receipt will be overwritten.
 Our documentation can (will) be found on the [logbook document](https://docs.google.com/document/d/14dr7cmlmFfUxpMpVZmCA-mB59K0Lx-MyVKvaO-z-XV4/). This documentation will be updated as the project progresses.  
-20:07 08/06/21
+08:27 10/06/21  
   
 # Changelog  
 
 **09/06/21**  
+0.5.1.1 - Added more comments, and did more bugfixing.  
 0.5.1 - Finished implementation of delete functionality, fixed up batch file to hide command prompts and pause correctly.  
   
 **08/06/21**  
