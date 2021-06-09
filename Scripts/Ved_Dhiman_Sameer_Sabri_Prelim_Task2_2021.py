@@ -652,19 +652,40 @@ def access(option, name=""): #script to ask for username and password yes
       begin()
       return
 
-  if option in ["delete", "d"]:
 
+
+  if option in ["delete", "d"]:
     global usernum
-    if int(tinput(f"To delete {name}, enter the PIN."))==userdic[name]:
-        file = open("users.txt").readlines() #a+ Opens a file for both appending and reading.
-        file = file[file.index("**"):]
-        file.pop(usernum[name]-1)
-        print(file)
-        sys.exit("thanks lol")
-      
+    if not name in usernum:
+        sprint("This user does not exist! Please try again.")
+        begin()
+    else:
+        if int(tinput(f"To delete {name}, enter the PIN. "))==int(userdic[name]):
+            file = open("users.txt").readlines() #a+ Opens a file for both appending and reading.
+            extra=file[:file.index("**\n")+1]
+            file = file[file.index("**\n")+1:]
+            file.remove("********\n")
+            file.pop(usernum[name])
+            fil=open("users.txt", "w")
+            fil.writelines(extra+file[:3]+["********\n"]+file[3:])
+            fil.close()
+
+            file2 = open("balances.txt").readlines()
+            file2.pop(usernum[name])
+            fil=open("balances.txt", "w")
+            fil.writelines(file2)
+            fil.close()
+            sprint(f"User {name} deleted!")
+            begin()
+        else:
+            sprint("This is not the PIN!")
+            access("delete", name)
+
+
+
   if option in ["login", "l"] : #Checks what the user has input
-                          #and runs the next script based on
-                          #what they chose
+                                #and runs the next script based on
+                                #what they chose
     
     if name in userdic:
       password = checkintype(f"Enter the PIN for user {correctcaps(name, ['all'])}: ", [int]) #get the user to input password
@@ -745,13 +766,14 @@ def receipt(user, transact, amount):
 
 def menu(user):
   balance=getbal(usernum[user])
-  logo(10)
+  logo(11)
   sprint(f"Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.\n")
   sprint("""
   1: Deposit
   2: Withdraw
   3: Check Transactions
-  4: Exit
+  4: Log Out
+  5: Exit
   """, "l")
         
   charbreak=0.01
@@ -762,13 +784,13 @@ def menu(user):
       withdraw(user)
   elif choice_input in ["3", "check transactions", "check", "ct", "ct", "c"]:
       choice_input="Check Transactions"
+  elif choice_input in ["4", "log out", "lo",]:
+      sprint(f"Logging out {user}")
+      begin()
   else:
-      sys.exit("ok bye!")
+      sys.exit(f"ATM shut down by user {user}.")
   menu(user)
 
 wipe()
 sprint("loading...")
-wipe()
 start("The GREAT Bank")
-
-logo(1)
