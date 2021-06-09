@@ -29,17 +29,21 @@ Our documentation can (will) be found on the [logbook document](https://docs.goo
 20:07 08/06/21
   
 # Changelog  
+
+**09/06/21**  
+0.5.1 - Finished implementation of delete functionality, fixed up batch file to hide command prompts and pause correctly.  
   
 **08/06/21**  
-0.5 - Large-scale expansion of the README, a new dedicated branch, and an addition of a batch file to the main directory that streamlines starting the script.  
+0.5 - Large-scale expansion of the README, a new dedicated branch, and an addition of a batch file to the main directory that streamlines starting the script. Additionally, the script now checks if it is running in python command prompt, and adjusts accordingly.  
   
 **07/06/21**  
-0.4.2 - Added delete functionality, users can now delete their profile  
-0.4.1.2 - Bugfixes, Added more comments  
+0.4.2 - Added delete functionality, users can now delete their profile.  
+0.4.1.2 - Bugfixes, Added more comments.  
   
 **06/06/21**  
-0.4.1.1 - Added comments and spacing for readability  
-0.4.1 - Fixed some bugs  
-0.4 - Added receipts  
+0.4.1.1 - Added comments and spacing for readability.  
+0.4.1 - Fixed some bugs.  
+0.4 - Added receipts.  
   
-0.3 and before - lacks documentation
+
+0.3 and prior - lacks documentation.  
