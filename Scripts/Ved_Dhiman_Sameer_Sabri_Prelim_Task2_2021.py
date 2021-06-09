@@ -3,7 +3,8 @@ import sys  # imports sys module
 import time  # imports time module
 from datetime import datetime as dm
 
-############################################################################
+
+######################################################################### Code for Universal Functions
 try: #when a function is called and it is
      #not defined inside the code
      #then this program will execute the
@@ -101,7 +102,6 @@ except: #if an error is thrown when the findpath()
                      #has been found then the findpath()
                      #function will be executed
 
-############################################################################
 #All above uses os module to locate
 #the project folder using user input
 #It then opens universal functions
@@ -109,18 +109,11 @@ except: #if an error is thrown when the findpath()
 global charbreak #makes charbreak global
 global endbreak  #makes endbreak global
 charbreak=0.025
+###########################################################################
 
-if not ('idlelib.run' in sys.modules or "PYCHARM_HOSTED" in os.environ):
-    endbreak=0
-    charbreak=0
-    def sprint (input_string, words_or_letters="letters", newline="yes"):
-        space="\n"
-        if newline!="yes":
-            space=""
-        print(input_string, end=space)
-        t(0.065*len(input_string))
-            
 
+
+############################################################################ Class for Balance
 userlist = open("users.txt") #open the user.txt file
 
 userdic = {} #creates a dictionary for user name and password
@@ -180,7 +173,7 @@ def getbal(marker, mode="read", value=0): #Defines the function
                                           #be the value of the balance
                                           #which will be overwritten
 
-                                          #To use the function in conuntion
+                                          #To use the function in combination
                                           #with these parameters then it
                                           #will look like - getbal(2, "write", 5000)
                                           #The first argument in the parameter
@@ -333,6 +326,7 @@ def getbal(marker, mode="read", value=0): #Defines the function
                                       #to the balance dictionary
                                       #These two variables correspond
                                       #to user id:balance
+
             except: #The code indented inside
                     #the except statement will run
                     #if an exception or error is
@@ -406,8 +400,12 @@ def getbal(marker, mode="read", value=0): #Defines the function
                      #can save and be
                      #accessed by other
                      #users
+#############################################################################
 
-def deposit(user): #function to deposit
+
+
+############################################################################# Class for Transactions
+def deposit(user): #defines the
     balance=getbal(usernum[user])
     wipe()
     logo(2) #logo in corner
@@ -425,7 +423,7 @@ def deposit(user): #function to deposit
     elif choice%5==0:
         getbal(usernum[user], "write", balance+int(choice))
         sprint(f"You deposit ${choice} into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.")
-        receipt(user, "deposit", choice)
+        receipt(user, "deposit", choice)                                                       z#
 
 def withdraw(user): #function to deposit
     balance=getbal(usernum[user])
@@ -450,9 +448,71 @@ def withdraw(user): #function to deposit
         sprint(f"You withdraw ${choice} from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.")
         receipt(user, "withdraw", choice)
 
+def receipt(user, transact, amount):
+    now = dm.now() # current date and time
+    transactlog=(f'''
+  {logo(0, "small", "y")}
+  {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
+  Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
+  Transaction ID: {r(20000, 500000)}
+  User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
+  Transaction: {correctcaps(transact)} of ${amount}.
+  New Balance: {getbal(usernum[user])}
+  {dm.now().strftime('Great Bank inc. %Y')}''')
 
-def logo(height_in, size="large", rtn="no"): #a function to print the logo in the corner of the screen -Ved
-    wipe()
+    a=True
+    if not os.path.exists(f"/receipts/{user}"):
+       os.makedirs(f"/receipts/{user}")
+    while a==True:
+        dic={}
+        if not os.path.exists(f"receipts/{user}/"):
+            os.mkdir(f"receipts/{user}/")
+        for count in range(1,4):
+            try:
+                a=False
+                receipt=open(f"receipts/{user}/receipt {count}.txt", "x")
+                receipt.write(transactlog)
+                receipt.close()
+                break
+            except:
+                e=0
+                for line in open(f"receipts/{user}/receipt {count}.txt"):
+                    try:
+                        dic[line.strip("Date and Time: ").split(" ")[2]]=count
+                        break
+                    except:
+                        e+=1
+                count+=1
+        if a==True:
+            lis=[]
+            for element in dic:
+                lis.append(element)
+                lis=sorted(lis)
+            count=dic[lis[0]]
+            receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
+            receipt.write(transactlog)
+            receipt.close()
+#############################################################################
+
+
+
+
+############################################################################# Class for Aesthetics
+def logo(height_in, size="large", rtn="no"): #Defines the logo() function
+                                             #to print the logo in the
+                                             #corner of the screen -Ved
+
+                                             #It sets the parameters:
+                                             #height_in adjusts the
+                                             #spacing underneath the logo
+
+
+                                             #To use the function in combination
+
+
+
+
+    wipe() #runs the wipe function
     try:
         screen_width
     except:
@@ -547,8 +607,7 @@ def local():
     {gap1}     GGG::::::GGG:::G      r:::::r                   ee:::::::::::::e        a::::::::::aa:::a             tt:::::::::::tt
     {gap1}        GGGGGG   GGGG      rrrrrrr                     eeeeeeeeeeeeee         aaaaaaaaaa  aaaa               ttttttttttt
     ''')
-    print(f'''
-    {gap3}Absurd Tachyometric Matrix Machine                                                                                              
+    print(f'''                                                                                           
     {gap2}BBBBBBBBBBBBBBBBB                                                      kkkkkkkk
     {gap2}B::::::::::::::::B                                                     k::::::k
     {gap2}B::::::BBBBBB:::::B                                                    k::::::k
@@ -570,19 +629,23 @@ def local():
     t(2)
     begin()
 
+if not ('idlelib.run' in sys.modules or "PYCHARM_HOSTED" in os.environ):
+    endbreak=0
+    charbreak=0
+    def sprint (input_string, words_or_letters="letters", newline="yes"):
+        space="\n"
+        if newline!="yes":
+            space=""
+        print(input_string, end=space)
+        t(0.065*len(input_string))
+#############################################################################
 
-################
 
-def reading_sleep():
-    #sleep for 5 is fucntion i use frequently within my code for the theory section
-    #So i have decided to shorted the process and make it a function
-    t(5)
 
-def normal_sleep():
-    #sleep for 0.5 is fucntion i use frequently within my code
-    #So i have decided to shorted the process and make it a function
-    t(0.5)
 
+
+
+############################################################################# Class for User Credentials
 def login(name,password):
   logo(1)
   if int(userdic[name])==int(password): #This checks if the login details are correct based on the dictionary made at start of script (and modified in register, maybe)
@@ -601,10 +664,10 @@ def login(name,password):
 def register(name,password):
   name=name.strip()
   file = open("users.txt","a") #a+ Opens a file for both appending and reading.
-                                           # The file pointer is at the end of the file if
-                                           # the file exists. The file opens in the append mode.
-                                           # If the file does not exist,
-                                           # it creates a new file for reading and writing
+                               # The file pointer is at the end of the file if
+                               # the file exists. The file opens in the append mode.
+                               # If the file does not exist,
+                               # it creates a new file for reading and writing
   global nextmark
   file.write(f'\n{name},{password},{nextmark}') #writes name and password to
                                      #the user credentials file
@@ -704,66 +767,31 @@ def access(option, name=""): #script to ask for username and password yes
       begin("register")
     password="0"
     while len(str(password))!=4:
-        password = str(checkintype(f"Enter a new PIN for user {correctcaps(name, ['all'])}: ", [int])) #prompts the user to input
+        password = str(tinput(f"Enter a new PIN for user {correctcaps(name, ['all'])}: ")) #prompts the user to input
                                                                                                   #their password
-        while len(password)<4:
-            password="0"+password #adds 0s that may have been stripped by int form
-            
+        if password.isdigit() == False:
+            sprint("The password must only be a 4 character digit")
+            sprint("For example: 1234")
+            continue
+
         if len(password)==4:
             break
-        sprint("This PIN is the wrong length! The PIN needs to be four digits long.")
+        else:
+            sprint("This PIN is the wrong length! The PIN needs to be four digits long and must only be digits.")
+
         wipe()
         logo(2)
 
     register(name,password) #runs the register function
+#############################################################################
 
-################
 
-def receipt(user, transact, amount):
-    now = dm.now() # current date and time
-    transactlog=(f'''
-  {logo(0, "small", "y")}
-  {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
-  Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
-  Transaction ID: {r(20000, 500000)}
-  User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
-  Transaction: {correctcaps(transact)} of ${amount}.
-  New Balance: {getbal(usernum[user])}
-  {dm.now().strftime('Great Bank inc. %Y')}''')
 
-    a=True
-    if not os.path.exists(f"/receipts/{user}"):
-       os.makedirs(f"/receipts/{user}")
-    while a==True:
-        dic={}
-        if not os.path.exists(f"receipts/{user}/"):
-            os.mkdir(f"receipts/{user}/")
-        for count in range(1,4):
-            try:
-                a=False
-                receipt=open(f"receipts/{user}/receipt {count}.txt", "x")
-                receipt.write(transactlog)
-                receipt.close()
-                break
-            except:
-                e=0
-                for line in open(f"receipts/{user}/receipt {count}.txt"):
-                    try:
-                        dic[line.strip("Date and Time: ").split(" ")[2]]=count
-                        break
-                    except:
-                        e+=1
-                count+=1
-        if a==True:
-            lis=[]
-            for element in dic:
-                lis.append(element)
-                lis=sorted(lis)
-            count=dic[lis[0]]
-            receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
-            receipt.write(transactlog)
-            receipt.close()
 
+
+
+
+############################################################################# Class for Menu
 def menu(user):
   balance=getbal(usernum[user])
   logo(11)
@@ -790,7 +818,10 @@ def menu(user):
   else:
       sys.exit(f"ATM shut down by user {user}.")
   menu(user)
+#############################################################################
+
 
 wipe()
 sprint("loading...")
 start("The GREAT Bank")
+

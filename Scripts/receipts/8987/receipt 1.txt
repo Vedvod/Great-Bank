@@ -1,0 +1,14 @@
+
+  +--------+
+  |::::::::|
+  |::Great:|
+  |::Bank::|
+  |::::::::|
+  +--------+
+  Date and Time: 06/09/21 at 21:25:37.
+  Location: LAPTOP-FHAS41PR branch, machine #1
+  Transaction ID: 463645
+  User: 8987, PIN: 6666
+  Transaction: Deposit of $23456789999999990.
+  New Balance: 23456790000000000
+  Great Bank inc. 2021
