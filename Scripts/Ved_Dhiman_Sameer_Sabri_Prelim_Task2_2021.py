@@ -106,9 +106,20 @@ except: #if an error is thrown when the findpath()
 #the project folder using user input
 #It then opens universal functions
 #using this path
-
-global charbreak #makes charbread global
+global charbreak #makes charbreak global
 global endbreak  #makes endbreak global
+charbreak=0.025
+
+if not ('idlelib.run' in sys.modules or "PYCHARM_HOSTED" in os.environ):
+    endbreak=0
+    charbreak=0
+    def sprint (input_string, words_or_letters="letters", newline="yes"):
+        space="\n"
+        if newline!="yes":
+            space=""
+        print(input_string, end=space)
+        t(0.065*len(input_string))
+            
 
 userlist = open("users.txt") #open the user.txt file
 
@@ -427,13 +438,13 @@ def withdraw(user): #function to deposit
     choice=checktype(choice)
     if type(choice)==str:
         sprint("String input is not valid! An integer or float input is required. Please try again.")
-        return deposit(user)
+        return withdraw(user)
     if not choice%5 == 0 or not int(choice)>0:
         sprint("This amount is invalid! Only combinations of cash notes can be withdrawn! Please try again.")
-        return deposit(user)
+        return withdraw(user)
     if choice>balance: #checks for if withdrawing too much
         sprint(f"This amount is invalid! You are trying to withdraw ${choice}, but you only have ${balance} in your account!")
-        return deposit(user)       
+        return withdraw(user)       
     elif choice%5==0:
         getbal(usernum[user], "write", balance-int(choice))
         sprint(f"You withdraw ${choice} from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.")
@@ -458,27 +469,6 @@ def logo(height_in, size="large", rtn="no"): #a function to print the logo in th
     {gap}ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
     {gap}ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
     {gap}ǁ    GG:::::::::::::::G     B::::::BBBBBB:::::B  ǁ
-    {gap}ǁ   G:::::GGGGGGGG::::G  $  BB:::::B     B:::::B ǁ
-    {gap}ǁ  G:::::G       GGGGGG  $$   B::::B     B:::::B ǁ
-    {gap}ǁ G:::::G               $  $  B::::B     B:::::B ǁ
-    {gap}ǁ G:::::G               $     B::::BBBBBB:::::B  ǁ
-    {gap}ǁ G:::::G    GGGGGGGGGG  $$   B:::::::::::::BB   ǁ
-    {gap}ǁ G:::::G    G::::::::G    $  B::::BBBBBB:::::B  ǁ
-    {gap}ǁ G:::::G    GGGGG::::G $  $  B::::B     B:::::B ǁ
-    {gap}ǁ G:::::G        G::::G  $$   B::::B     B:::::B ǁ
-    {gap}ǁ  G:::::G       G::::G   $   B::::B     B:::::B ǁ
-    {gap}ǁ   G:::::GGGGGGGG::::G     BB:::::BBBBBB::::::B ǁ
-    {gap}ǁ    GG:::::::::::::::G     B:::::::::::::::::B  ǁ
-    {gap}ǁ      GGG::::::GGG:::G     B::::::::::::::::B   ǁ
-    {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
-    {gap}+================================================+
-    ''') #the logo
-
-"""
-    {gap}+================================================+
-    {gap}ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
-    {gap}ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
-    {gap}ǁ    GG:::::::::::::::G     B::::::BBBBBB:::::B  ǁ
     {gap}ǁ   G:::::GGGGGGGG::::G     BB:::::B     B:::::B ǁ
     {gap}ǁ  G:::::G       GGGGGG       B::::B     B:::::B ǁ
     {gap}ǁ G:::::G                     B::::B     B:::::B ǁ
@@ -493,13 +483,35 @@ def logo(height_in, size="large", rtn="no"): #a function to print the logo in th
     {gap}ǁ      GGG::::::GGG:::G     B::::::::::::::::B   ǁ
     {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
     {gap}+================================================+
-""" #old logo
+    ''') #logo 1 (in use)
+
+    """
+    {gap}+================================================+
+    {gap}ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
+    {gap}ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
+    {gap}ǁ    GG:::::::::::::::G     B::::::BBBBBB:::::B  ǁ
+    {gap}ǁ   G:::::GGGGGGGG::::G  $  BB:::::B     B:::::B ǁ
+    {gap}ǁ  G:::::G       GGGGGG  $$   B::::B     B:::::B ǁ
+    {gap}ǁ G:::::G               $  $  B::::B     B:::::B ǁ
+    {gap}ǁ G:::::G               $     B::::BBBBBB:::::B  ǁ
+    {gap}ǁ G:::::G    GGGGGGGGGG  $$   B:::::::::::::BB   ǁ
+    {gap}ǁ G:::::G    G::::::::G    $  B::::BBBBBB:::::B  ǁ
+    {gap}ǁ G:::::G    GGGGG::::G $  $  B::::B     B:::::B ǁ
+    {gap}ǁ G:::::G        G::::G  $$   B::::B     B:::::B ǁ
+    {gap}ǁ  G:::::G       G::::G   $   B::::B     B:::::B ǁ
+    {gap}ǁ   G:::::GGGGGGGG::::G     BB:::::BBBBBB::::::B ǁ
+    {gap}ǁ    GG:::::::::::::::G     B:::::::::::::::::B  ǁ
+    {gap}ǁ      GGG::::::GGG:::G     B::::::::::::::::B   ǁ
+    {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
+    {gap}+================================================+
+    """ #logo 2 (possibly used in future)
 
     if size=="small":
         log=("""+--------+\n  |::::::::|\n  |::Great:|\n  |::Bank::|\n  |::::::::|\n  +--------+""") #small logo
     if rtn in ["y", "yes"]:
         return log
-    sprint(log, "l")
+    for line in log.split("/n"):
+        print(line)
     for j in range((screen_height-height_in)-int(screen_width/80)-19): #loop to space up the logo
         print("") #newlines
     endbreak=ole #reset endbreak
@@ -555,7 +567,7 @@ def local():
     {gap2}BBBBBBBBBBBBBBBBB          aaaaaaaaaa  aaaa       nnnnnn    nnnnnn     kkkkkkkk    kkkkkkk
     ''')
     print(int((screen_height-40)/2)*"\n", end="")
-    t(1)
+    t(2)
     begin()
 
 
@@ -754,6 +766,8 @@ def menu(user):
       sys.exit("ok bye!")
   menu(user)
 
+wipe()
+sprint("loading...")
 wipe()
 start("The GREAT Bank")
 
