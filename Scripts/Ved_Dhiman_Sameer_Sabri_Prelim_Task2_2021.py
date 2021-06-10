@@ -423,7 +423,7 @@ def deposit(user): #defines the
     elif choice%5==0:
         getbal(usernum[user], "write", balance+int(choice))
         sprint(f"You deposit ${choice} into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.")
-        receipt(user, "deposit", choice)                                                       z#
+        receipt(user, "deposit", choice)
 
 def withdraw(user): #function to deposit
     balance=getbal(usernum[user])
@@ -670,7 +670,7 @@ def register(name,password):
                                # it creates a new file for reading and writing
   global nextmark
   file.write(f'\n{name},{password},{nextmark}') #writes name and password to
-                                     #the user credentials file
+                                                #the user credentials file
   global userdic
   userdic[name]=password
 
@@ -761,17 +761,23 @@ def access(option, name=""): #script to ask for username and password yes
   elif option in ["register", "r"]: #Checks what the user has input
         #and runs the next script based on
         #what they chose
-      
+    if name.isalnum() == False:
+        sprint("Sorry. You have entered invalid characters. ")
+        sprint("Only letters and numbers are allowed in your username ")
+        access("register")
     if name in userdic:
       sprint(f"The user {correctcaps(name, ['all'])} is already registered. Please try again.")
       begin("register")
     password="0"
-    while len(str(password))!=4:
+    while len(str(password))!=4 or password.isdigit() == False:
         password = str(tinput(f"Enter a new PIN for user {correctcaps(name, ['all'])}: ")) #prompts the user to input
                                                                                                   #their password
         if password.isdigit() == False:
             sprint("The password must only be a 4 character digit")
             sprint("For example: 1234")
+            wipe()
+            logo(2)
+            print("Register: ")
             continue
 
         if len(password)==4:
@@ -805,7 +811,7 @@ def menu(user):
   """, "l")
         
   charbreak=0.01
-  choice_input=checkinput(f"What would you like to do, {correctcaps(user, ['all'])}? ", ["1", "2", "3", "4", "deposit", "withdraw", "check transactions", "exit", "d", "w", "check", "e", "ct", "c"])
+  choice_input=checkinput(f"What would you like to do, {correctcaps(user, ['all'])}? ", ["1", "2", "3", "4", "5", "deposit", "withdraw", "check transactions", "log out", "exit", "d", "w", "L", "check", "e", "ct", "c"])
   if choice_input in ["1", "deposit", "d"]:
       deposit(user)
   elif choice_input in ["2", "withdraw", "w"]:
@@ -823,5 +829,6 @@ def menu(user):
 
 wipe()
 sprint("loading...")
+wipe()
 start("The GREAT Bank")
 
