@@ -33,7 +33,14 @@ Implemented Working Functions
                 #if mode is r, .read() the file
                 #then, return file
 
-  4 #correctcaps
+  4 #correctcaps(string, modlist=[]): - a function to correct the capitalisation of a given string, typically multi-sentence, use '~' to mark capital letters.
+        #adds markers to locate punctuations, '!', '.', and '?'
+            #then, it splits on the puncuations, splitting the string into its sentences, if possible
+                #for every letter in each sentence
+                    #iterates through letters, if a '~', then it is removed, and the next letter is capitalised.
+                    #additionally, if the letter is an ' i ', it is capitalised
+                        #after iterating through every letter, the process is repeated for other sentences, and they are all combined
+                            #finally, the code scans the final string for punctuation markers, and then replaces them with the original punctuations.   
 
   5 #txtfile(directory) - open a file at directory specified and execute or print per line
         #add path and directory together, then open file at location
@@ -120,20 +127,69 @@ Implemented Working Functions
             #divi must be defined locally
         #x is integer, checked for if in divi
 
-Experimental functions (under revision):
+ 21
+    #wipe() - clears the screen 
+        #first, searches for the noclear file, which indicates that the function should link to clear()
+            #if it finds it, it clears screen with clear()
+            #otherwise, it checks if the os.name is posix (unix) or nt (Windows NT 3.1+)
+                #if posix, os.system('clear')
+                #otherwise, os.system('cls')
 
- x1 testforvalue - tests if variable has a value, if not, sets value
- 
- x2 #slowprint(input_string, words_or_letters="letters") - print a string by each letter or word as specified
-        #first, checks if words mode or letters mode
-            #if words mode, split input_string by spaces and save as input_string
-            #then, print each piece of input_string and wait charbreak seconds per letter
-                #then, wait endbreak seconds and print a newline
-x2a #sprint(input_string, words_or_letters="letters") - alternative to slowprint, calls slowprint
+ 22
+    #testforvalue(variable, default_value, replace="no") - checks if the given variable has a value, if not it gives it the specified value
+        #first, it tries to get the value
+            #if this fails, it sets the variable to the given value
+ 23
+    #fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes") - formatted print, [will have] several parameters that aid in modified printing
+        #first, checks if the string is to be printed by words, lines, or letters. Depending on, it splits the string and changes the value of variable 'space'
+            #then, it runs testforvalues for charbreak and endbreak
+                #it iterates through every element in the list and prints them
+                #if slow is True, it waits based on the length of the element.
+                #if newline is 'yes', then it prints a newline.
 
- x3 #tinput(input_string) - tlines input string, then asks for input without newline
+ 23b
+    #tline (input_string, words_or_letters="letters", newline="yes") - support for new tline (sprint)
+        #calls sprint, kept for legacy (old projects) reasons
+    #sprint (input_string, words_or_letters="letters", newline="yes") - slow printing calling fprint
+        #calls fprint with the parameters given, and with the slow parameter specified as True
 
- x4 #varcheck() - pauses code, repeats asks for variable name input, outputs if defined, and value if has one.
+ 23c
+    #tinput(input_string, letters="") - sprints an input, then a blank input on the same line
+        #sprint the input_string with no newline
+            #then, print a blank input 
+
+ 24
+    #varcheck(var="") - debug command, prints if a variable is defined, and, if so, value and type of a variable
+        #first, if var is predefinined, then it checks it for definition, value, and type
+            print(f"""The value of {var} is {eval(var)}, type {str(type(eval(var)))[8:].strip("'>")}
+        except:
+            print(f"The value of {var} is undefined!")
+        return
+            
+    var=checkintype("What variable will you check? Type 'contine' to exit: ", [str])
+    if var=="continue":
+        return
+    else:
+        try:
+            print(f"""The value of {var} is {eval(var)}, type {str(type(eval(var)))[8:].strip("'>")}
+        except:
+            print(f"The value of {var} is undefined!")
+    var=""
+    print("")
+    varcheck()
+
+'***25***'
+    #filler(string, space, beforemidafter="after", tline="n"):
+    bma=beforemidafter #for easier
+    string=str(string) #turn the variable into a string for concat, ects
+    extraspace=space-len(string) #determine how much space is left over
+    if tline in ["no", "n"]: #if not tlining
+        if bma in ["before", "b", "start"]:
+            return (extraspace*" "+string)
+        elif bma in ["middle", "mid", "m"]:
+            return ((extraspace-int((extraspace/2)))*" "+string+int((extraspace/2))*" ")
+        elif bma in ["after", "a", "end"]:
+            return (string+extraspace*" ")
  
 Legacy functions (redundant/no longer in use, but still interesting/stupid)
 
@@ -153,12 +209,17 @@ def t(time_to_sleep_for): #shorthand for my sanity
         tline("Value can not be converted to floating point!") #fail message
 
 '***2***'
-def r(first_value, second_value=""): #shorthand for random
+def r(a, b=""): #shorthand for random
+  if b=="":
     try:
-        return rm.choice(first_value) #test if a is a list, if so, choose a random value from a
-    except: #if a is not a list
-        first_value, second_value=sorted([first_value, second_value]) #sort a and b so that random.randint works
-        return rm.randint(first_value, second_value) #random.randint between the two given values
+        return choice(a)
+    except:
+        return "the value must be a list."
+  else:
+    try:
+        return randint(int(a), int(b))
+    except:
+        return f"""the first value, a(n) {str(type(a))[8:].strip("'>")} and the second value, a(n) {str(type(b))[8:].strip("'>")} must both be type int!"""
 
 '***3***'
 def pimport(directory, mode="r"): #open file in specified mode and return contents if read mode
@@ -259,21 +320,8 @@ def clear(number_of_clears=1): #to clear screen without os.system(clr) or whatev
     for i in range(reps): #print screensize lines (5*reps + remain)
         print("", end=5*"\n") #print the multiples
     print("", end=remain*"\n") #print the extra
-        
-'***7***'
-def wipe():
-    try:
-        a=open("C:/noclear/noclear.txt")
-        a.close()
-        clear()
-    except:
-        if os.name != 'posix':
-            # Else Operating System is Windows (os.name = nt)
-            _ = os.system('cls')
-        # Check if Operating System is Mac and Linux or Windows
-        else:
-            _ = os.system('clear')
 
+'***7a**'
 def calibsize(): #function to get user to calibrate their screen size for later usage
     if checkinput("Do you want to quick calibrate the screen size? ") in ["y", "yes"]: #negative response
         chose_size=checkinput("Choose a screen default from 'small', 'medium', and 'large': ", ["small", "s", "medium", "m", "large", "l"])
@@ -328,11 +376,13 @@ def calibsize(): #function to get user to calibrate their screen size for later 
     endbreak=ole
     return screen_width, screen_height
 
+'***7b**'
 def start(name_of_script="A nameless script, which you forgot to enter a value for has been"): #pre-script
     global screen_width
     global screen_size
     screen_width, screen_height=calibsize()
     score=0 #idk
+    wipe()
     print("Loading...") #of course
     i=0 #to set i as 0
     while i<100: #while "percent loaded" less than 100
@@ -582,7 +632,21 @@ def div(number): #divider
         nam="Not Found!"
     print("\n\n**********************************************************************************\nChapter "+str(x)+": "+nam+"\n")
 
-'***x1**'
+'***21**'
+def wipe():
+    try:
+        a=open("C:/noclear/noclear.txt")
+        a.close()
+        clear()
+    except:
+        if os.name != 'posix':
+            # Else Operating System is Windows (os.name = nt)
+            _ = os.system('cls')
+        # Check if Operating System is Mac and Linux or Windows
+        else:
+            _ = os.system('clear')
+
+'***22**'
 def testforvalue(variable, default_value, replace="no"):
     default_value=str(default_value)
     if replace=="rep":
@@ -591,7 +655,7 @@ def testforvalue(variable, default_value, replace="no"):
     else:
         exec("global "+variable+"\ntry:\n "+variable+"\nexcept:\n "+variable+"="+str(default_value))
 
-'***x2**'
+'***23a**'
 def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes"):
     space=""
     if words_letters_or_lines.lower() in ["words", "w"]:
@@ -619,18 +683,18 @@ def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes
     if newline=="yes":
         print("")
 
-'**x2a**'
+'***23b*'
 def tline (input_string, words_or_letters="letters", newline="yes"):
     sprint(input_string, words_or_letters, newline)
 def sprint (input_string, words_or_letters="letters", newline="yes"):
     fprint(input_string, True, words_or_letters, newline)
 
-'***x3***'
+'***23l**'
 def tinput(input_string, letters=""):
     sprint(input_string, letters, "no")
     return input("")
 
-'***x4***'
+'***24***'
 def varcheck(var=""):
     if var!="":
         try:
@@ -651,7 +715,7 @@ def varcheck(var=""):
     print("")
     varcheck()
 
-'***x5***'
+'***25***'
 def filler(string, space, beforemidafter="after", tline="n"):
     bma=beforemidafter #for easier
     string=str(string) #turn the variable into a string for concat, ects
@@ -663,6 +727,7 @@ def filler(string, space, beforemidafter="after", tline="n"):
             return ((extraspace-int((extraspace/2)))*" "+string+int((extraspace/2))*" ")
         elif bma in ["after", "a", "end"]:
             return (string+extraspace*" ")
+
 '''
 Legacy Functions (No longer in use)
 
