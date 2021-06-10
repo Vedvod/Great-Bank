@@ -29,6 +29,8 @@ Our documentation can (will) be found on the [logbook document](https://docs.goo
 08:27 10/06/21  
   
 # Changelog  
+**10/06/21**  
+0.5.1.2 - Updated documentation for universal functions  
 
 **09/06/21**  
 0.5.1.1 - Added more comments, and did more bugfixing.  
