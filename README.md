@@ -1,7 +1,7 @@
 # The Great Bank company
 This repository is a storage for the files of our SDD Preliminary Course Assignment 2 task, which is to code an ATM in Python. We have opted to construct our ATM as the property of the fictional Great Bank, which is unrelated to the existent [Greater](https://en.wikipedia.org/wiki/Greater_Bank) [Bank](https://www.greaterbank.com/). To this end, we (and [this website](https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)) have made an ASCII logo.  
 
-```python
+```
 +================================================+
 ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
 ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
