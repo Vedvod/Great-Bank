@@ -2,8 +2,6 @@ import os  # imports os module
 import sys  # imports sys module
 import time  # imports time module
 from datetime import datetime as dm
-if r(1, 50000)==r(1, 50000):
-    print("Well, that's a very low chance!")
 ######################################################################### Code for Universal Functions
 try: #when a function is called and it is
      #not defined inside the code
@@ -24,8 +22,7 @@ except: #if an error is thrown when the findpath()
         count=0 #sets count to 0
         dic={} #set dic to a dictionary
         y=0 #sets y to comment
-
-       filepath=__file__ + "check universal functions" #get file path
+        filepath=__file__ + "check universal functions" #get file path
 
 
 
@@ -255,8 +252,8 @@ def getbal(marker, mode="read", value=0): #Defines the function
                                          #to the marker parameter which is
                                          #defined in the function parameters
                                          #above
-
-                 return float(amount) #When the two variables are
+                amount=amount.replace(".00", "")
+                return int(amount) #When the two variables are
                                     #equal the coresponding balance
                                     #will be returned
                                     #the amount variable is the balance
@@ -448,7 +445,7 @@ def withdraw(user): #function to deposit
         sprint(f"This amount is invalid! You are trying to withdraw ${choice}, but you only have ${balance} in your account!")
         return withdraw(user)       
     elif choice%5==0:
-        choice=int(str(choice).strip(".0"))
+        choice=int(str(choice).replace(".0", ""))
         getbal(usernum[user], "write", balance-int(choice))
         sprint(f"You withdraw ${choice} from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.")
         receipt(user, "withdraw", choice)
@@ -685,7 +682,7 @@ def register(name,password):
   file.close() #closes the file
 
   file=open("balances.txt", "a") #open the balances text file
-  file.write(f"{correctcaps(name, ['all'])}: {nextmark},{10}\n") #add an entry to the balances file for the new user, with $10.
+  file.write(f"{correctcaps(name, ['all'])}: {nextmark},{10.00}\n") #add an entry to the balances file for the new user, with $10.
   file.close()
   nextmark+=1
   sprint(f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
