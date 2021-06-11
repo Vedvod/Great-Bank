@@ -1,9 +1,10 @@
 #all the universally applicable functions for all my projects
-import random as rm
+from random import choice, randint
 import time
 import sys
 import math
 import datetime as dt
+import os
 
 global endbreak
 global charbreak
