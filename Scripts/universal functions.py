@@ -378,10 +378,13 @@ def calibsize(): #function to get user to calibrate their screen size for later 
     return screen_width, screen_height
 
 '***7b**'
-def start(name_of_script="A nameless script, which you forgot to enter a value for has been"): #pre-script
+def start(name_of_script="A nameless script, which you forgot to enter a name value for, has been", screen_w=0, screen_h=0): #pre-script
     global screen_width
     global screen_size
-    screen_width, screen_height=calibsize()
+    if screen_w!=0 and screen_h!=0:
+       screen_width, screen_height=screen_w, screen_h
+    else:
+        screen_width, screen_height=calibsize()
     score=0 #idk
     wipe()
     print("Loading...") #of course
