@@ -34,6 +34,9 @@ Our documentation can (will) be found on the [logbook document](https://docs.goo
 
 ## 0.5
 
+**14/06/21**
+0.5.2 - Added auto-calibration for command prompt users. Does not work for IDES. Also, bugfixing
+
 **11/06/21**  
 0.5.1.3 - More bugfixing  
 
