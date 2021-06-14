@@ -593,6 +593,7 @@ def local():
     gap1=int((screen_width-122)/2)*" "
     gap2=int((screen_width-90)/2)*" "
     gap3=int((screen_width-34)/2)*" "
+    print(int((screen_height-40)/4)*"\n", end="")
     print(f'''                                                                                                                                                                                                                                                              
     {gap1}        GGGGGGGGGGGGG                                                                                      tttt 
     {gap1}     GGG::::::::::::G                                                                                    ttt:::t
@@ -629,7 +630,6 @@ def local():
     {gap2}B::::::::::::::::B        a::::::::::aa:::a       n::::n    n::::n     k::::::k   k:::::k
     {gap2}BBBBBBBBBBBBBBBBB          aaaaaaaaaa  aaaa       nnnnnn    nnnnnn     kkkkkkkk    kkkkkkk
     ''')
-    print(int((screen_height-40)/4)*"\n", end="")
     t(2)
     begin()
 
@@ -842,8 +842,8 @@ try:
 except OSError:
     columns, rows = os.get_terminal_size(1)
 
-print(columns, rows)
-t(2)
+print(f"The size is {columns} columns and {rows} rows. Please do not change it.")
+t(2.5)
 wipe()
 sprint("loading...")
 wipe()
