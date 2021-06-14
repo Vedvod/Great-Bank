@@ -690,6 +690,7 @@ def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes
 '***23b*'
 def tline (input_string, words_or_letters="letters", newline="yes"):
     sprint(input_string, words_or_letters, newline)
+
 def sprint (input_string, words_or_letters="letters", newline="yes"):
     fprint(input_string, True, words_or_letters, newline)
 
