@@ -426,6 +426,7 @@ def deposit(user): #defines the
         getbal(usernum[user], "write", balance+int(choice))
         sprint(f"You deposit ${choice} into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.")
         receipt(user, "deposit", choice)
+        ask(user)
 
 def withdraw(user): #function to deposit
     balance=getbal(usernum[user])
@@ -450,50 +451,77 @@ def withdraw(user): #function to deposit
         getbal(usernum[user], "write", balance-int(choice))
         sprint(f"You withdraw ${choice} from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.")
         receipt(user, "withdraw", choice)
+        ask(user)
 
-def receipt(user, transact, amount):
+def receipt(user,transact,amount):
+    global transactlog
     now = dm.now() # current date and time
-    transactlog=(f'''
-  {logo(0, "small", "y")}
-  {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
-  Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
-  Transaction ID: {r(20000, 500000)}
-  User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
-  Transaction: {correctcaps(transact)} of ${amount}.
-  New Balance: ${getbal(usernum[user])}
-  {dm.now().strftime('Great Bank® Ltd.  %Y')}''')
+    transactlog = (f'''
+      {logo(0, "small", "y")}
+      {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
+      Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1, 6)}
+      Transaction ID: {r(20000, 500000)}
+      User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
+      Transaction: {correctcaps(transact)} of ${amount}.
+      New Balance: ${getbal(usernum[user])}
+      {dm.now().strftime('Great Bank® Ltd.  %Y')}''')
 
-    a=True
+    a = True
 
-    while a==True:
-        dic={}
+    while a == True:
+        dic = {}
         if not os.path.exists(f"receipts/{user}/"):
             os.mkdir(f"receipts/{user}/")
-        for count in range(1,4):
+        for count in range(1, 4):
             try:
-                receipt=open(f"receipts/{user}/receipt {count}.txt", "x")
+                receipt = open(f"receipts/{user}/receipt {count}.txt", "x")
                 receipt.write(transactlog)
                 receipt.close()
-                a=False
+                a = False
                 break
             except:
-                e=0
+                e = 0
                 for line in open(f"receipts/{user}/receipt {count}.txt"):
                     try:
-                        dic[line.strip("Date and Time: ").split(" ")[2]]=count
+                        dic[line.strip("Date and Time: ").split(" ")[2]] = count
                         break
                     except:
-                        e+=1
-                count+=1
-        if a==True:
-            lis=[]
+                        e += 1
+                count += 1
+        if a == True:
+            lis = []
             for element in dic:
                 lis.append(element)
-                lis=sorted(lis)
-            count=dic[lis[0]]
-            receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
+                lis = sorted(lis)
+            count = dic[lis[0]]
+            receipt = open(f"receipts/{user}/receipt {count}.txt", "w")
             receipt.write(transactlog)
             receipt.close()
+
+def ask(user):
+    global transactlog
+    print_receipt = input("Would you like to print a reciept? Y|N: ")
+    if print_receipt.upper() == "Y" or print_receipt.upper() == "N":
+        if print_receipt.upper() == "Y":
+            print(transactlog)
+            menu(ask)  # return to menu
+            return  # end
+
+        if print_receipt.upper() == "N":
+            sprint("Thank you for using the Great Bank ATM")
+            menu(ask)  # return to menu
+            return  # end
+
+    else:
+        sprint(print_receipt + " " + "is not a valid input")
+        sprint("Please only answer with Y or N")
+        wipe()
+        logo(15)
+        ask()
+
+
+
+
 #############################################################################
 
 
@@ -641,8 +669,9 @@ if not ('idlelib.run' in sys.modules or "PYCHARM_HOSTED" in os.environ):
         if newline!="yes":
             space=""
         print(input_string, end=space)
-        t(0.065*len(input_string))
+        t(0.02*len(input_string))
 #############################################################################
+
 
 
 
@@ -684,16 +713,19 @@ def register(name,password):
   
   file.close() #closes the file
 
-  file=open("balances.txt", "a") #open the balances text file
-  if int(nextmark)==69:
-      file.write(f"{correctcaps(name, ['all'])}: {nextmark},{420.00}\n") #add an entry to the balances file for the new user, with $420.
-      sprint("OMG YOU ARE THE 69TH CUSTOMER EPIC POGGERS HYPE INSANE NO WAY YOU GET $420 FREE JKOJWDJKLKD")
-  else:  
-      file.write(f"{correctcaps(name, ['all'])}: {nextmark},{10.00}\n") #add an entry to the balances file for the new user, with $10.
-      sprint(f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
+  file = open("balances.txt", "a")  # open the balances text file
+  if int(nextmark) == 70:
+      amount = "421.00"
+      sprint("CONGRATULATIONS YOU ARE THE 70TH CUSTOMER YOU GET $421 FREE")
+  else:
+      amount = "10.00"
+      sprint(
+          f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
+  file.write(
+      f"{correctcaps(name, ['all'])}: {nextmark},{amount}\n")  # add an entry to the balances file for the new user, with $420.
   file.close()
-  nextmark+=1
-  wipe() #clears the screen
+  nextmark += 1
+  wipe()  # clears the screen
 
   login(name,password) #runs the login function
 
@@ -813,20 +845,17 @@ def menu(user):
   sprint("""
   1: Deposit
   2: Withdraw
-  3: Check Transactions
-  4: Log Out
-  5: Exit
+  3: Log Out
+  4: Exit
   """, "l")
         
   charbreak=0.01
-  choice_input=checkinput(f"What would you like to do, {correctcaps(user, ['all'])}? ", ["1", "2", "3", "4", "5", "deposit", "withdraw", "check transactions", "log out", "exit", "d", "w", "L", "check", "e", "ct", "c"])
+  choice_input=checkinput(f"What would you like to do, {correctcaps(user, ['all'])}? ", ["1", "2", "3", "4", "deposit", "withdraw", "log out", "exit", "d", "w", "L", "e"])
   if choice_input in ["1", "deposit", "d"]:
       deposit(user)
   elif choice_input in ["2", "withdraw", "w"]:
       withdraw(user)
-  elif choice_input in ["3", "check transactions", "check", "ct", "ct", "c"]:
-      choice_input="Check Transactions"
-  elif choice_input in ["4", "log out", "lo",]:
+  elif choice_input in ["3", "log out", "lo",]:
       sprint(f"Logging out {user}")
       begin()
   else:
