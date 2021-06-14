@@ -836,11 +836,6 @@ def menu(user):
 
 global screen_width
 global screen_size
-try:
-    ""
-except:
-    a=0
-    b=0
 
 try:
     columns, rows = os.get_terminal_size(0)
