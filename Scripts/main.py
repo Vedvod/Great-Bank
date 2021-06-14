@@ -1,7 +1,9 @@
 import os  # imports os module
+from os import get_terminal_size
 import sys  # imports sys module
 import time  # imports time module
 from datetime import datetime as dm
+
 ######################################################################### Code for Universal Functions
 try: #when a function is called and it is
      #not defined inside the code
@@ -107,7 +109,6 @@ global charbreak #makes charbreak global
 global endbreak  #makes endbreak global
 charbreak=0.025
 ###########################################################################
-
 
 
 ############################################################################ Class for Balance
@@ -515,7 +516,7 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
 
     wipe() #runs the wipe function
     try:
-        screen_width
+        screen_width=columns
     except:
         screen_width=40
     global charbreak #charbreak for the sprint function
@@ -582,6 +583,8 @@ def local():
     wipe()
     global screen_width
     global screen_height
+    screen_width=columns
+    screen_height=rows
     try:
         screen_height-=2
         screen_width
@@ -626,7 +629,7 @@ def local():
     {gap2}B::::::::::::::::B        a::::::::::aa:::a       n::::n    n::::n     k::::::k   k:::::k
     {gap2}BBBBBBBBBBBBBBBBB          aaaaaaaaaa  aaaa       nnnnnn    nnnnnn     kkkkkkkk    kkkkkkk
     ''')
-    print(int((screen_height-40)/2)*"\n", end="")
+    print(int((screen_height-40)/4)*"\n", end="")
     t(2)
     begin()
 
@@ -682,10 +685,14 @@ def register(name,password):
   file.close() #closes the file
 
   file=open("balances.txt", "a") #open the balances text file
-  file.write(f"{correctcaps(name, ['all'])}: {nextmark},{10.00}\n") #add an entry to the balances file for the new user, with $10.
+  if int(nextmark)==69:
+      file.write(f"{correctcaps(name, ['all'])}: {nextmark},{420.00}\n") #add an entry to the balances file for the new user, with $420.
+      sprint("OMG YOU ARE THE 69TH CUSTOMER EPIC POGGERS HYPE INSANE NO WAY YOU GET $420 FREE JKOJWDJKLKD")
+  else:  
+      file.write(f"{correctcaps(name, ['all'])}: {nextmark},{10.00}\n") #add an entry to the balances file for the new user, with $10.
+      sprint(f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
   file.close()
   nextmark+=1
-  sprint(f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
   wipe() #clears the screen
 
   login(name,password) #runs the login function
@@ -827,8 +834,22 @@ def menu(user):
   menu(user)
 #############################################################################
 
+global screen_width
+global screen_size
+try:
+    ""
+except:
+    a=0
+    b=0
+
+try:
+    columns, rows = os.get_terminal_size(0)
+except OSError:
+    columns, rows = os.get_terminal_size(1)
+
+print(columns, rows)
+t(2)
 wipe()
 sprint("loading...")
 wipe()
-start("The GREAT Bank")
-
+start("The GREAT Bank", columns, rows)
