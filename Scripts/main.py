@@ -108,6 +108,7 @@ except: #if an error is thrown when the findpath()
 global charbreak #makes charbreak global
 global endbreak  #makes endbreak global
 charbreak=0.025
+
 ###########################################################################
 
 
@@ -424,8 +425,8 @@ def deposit(user): #defines the
         return deposit(user)
     elif choice%5==0:
         getbal(usernum[user], "write", balance+int(choice))
-        sprint(f"You deposit ${choice} into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.")
-        receipt(user, "deposit", choice)
+        sprint(f"You deposit ${choice}.00 into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.00")
+        ask(user, "deposit", choice)
 
 def withdraw(user): #function to deposit
     balance=getbal(usernum[user])
@@ -448,13 +449,15 @@ def withdraw(user): #function to deposit
     elif choice%5==0:
         choice=int(str(choice).replace(".0", ""))
         getbal(usernum[user], "write", balance-int(choice))
-        sprint(f"You withdraw ${choice} from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.")
-        receipt(user, "withdraw", choice)
+        sprint(f"You withdraw ${choice}.00 from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.00")
+        ask(user, "withdraw", choice)
 
 def receipt(user, transact, amount):
+    global transactlog
     now = dm.now() # current date and time
     transactlog=(f'''
   {logo(0, "small", "y")}
+  
   {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
   Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
   Transaction ID: {r(20000, 500000)}
@@ -494,6 +497,25 @@ def receipt(user, transact, amount):
             receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
             receipt.write(transactlog)
             receipt.close()
+
+def ask(user, transact, amount):
+    receipt(user, transact, amount)
+    global transactlog
+    logo(1)
+    print_receipt = checkinput("Would you like to print a reciept? Y|N: ")
+    if print_receipt.upper() == "Y":
+        wipe()
+        logo(14)
+        print(transactlog)
+        input()
+        menu(user)  # return to menu
+        return  # end
+
+    if print_receipt.upper() == "N":
+        sprint("Thank you for using the Great Bank ATM")
+        menu(user)  # return to menu
+        return  # end
+
 #############################################################################
 
 
@@ -525,6 +547,8 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
     global endbreak #for sprint
     ole=endbreak #preserve endbreak
     endbreak=0 #no pause between lines
+    for i in range(int(screen_width/60)):
+        print("")
     gap=int(screen_width/80)*" " #find the gap from the side of the screen
     log=(f'''
     {gap}+================================================+
@@ -574,25 +598,21 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
         return log
     for line in log.split("/n"):
         print(line)
-    for j in range((screen_height-height_in)-int(screen_width/80)-19): #loop to space up the logo
+    for j in range((screen_height-height_in)-20): #loop to space up the logo
         print("") #newlines
     endbreak=ole #reset endbreak
     charbreak=olc #reset charbreak
 
-def local():
+def local(s_w, s_h):
     wipe()
     global screen_width
     global screen_height
-    screen_width=columns
-    screen_height=rows
-    try:
-        screen_height-=2
-        screen_width
-    except:
-        screen_width=40
-    gap1=int((screen_width-122)/2)*" "
-    gap2=int((screen_width-90)/2)*" "
-    gap3=int((screen_width-34)/2)*" "
+    screen_width=s_w
+    screen_height=s_h
+
+    gap1=int((screen_width-128)/2)*" "
+    gap2=int((screen_width-96)/2)*" "
+    gap3=int((screen_width-40)/2)*" "
     print(int((screen_height-40)/4)*"\n", end="")
     print(f'''                                                                                                                                                                                                                                                              
     {gap1}        GGGGGGGGGGGGG                                                                                      tttt 
@@ -633,15 +653,6 @@ def local():
     t(2)
     begin()
 
-if not ('idlelib.run' in sys.modules or "PYCHARM_HOSTED" in os.environ):
-    endbreak=0
-    charbreak=0
-    def sprint (input_string, words_or_letters="letters", newline="yes"):
-        space="\n"
-        if newline!="yes":
-            space=""
-        print(input_string, end=space)
-        t(0.065*len(input_string))
 #############################################################################
 
 
@@ -685,12 +696,13 @@ def register(name,password):
   file.close() #closes the file
 
   file=open("balances.txt", "a") #open the balances text file
-  if int(nextmark)==69:
-      file.write(f"{correctcaps(name, ['all'])}: {nextmark},{420.00}\n") #add an entry to the balances file for the new user, with $420.
-      sprint("OMG YOU ARE THE 69TH CUSTOMER EPIC POGGERS HYPE INSANE NO WAY YOU GET $420 FREE JKOJWDJKLKD")
-  else:  
-      file.write(f"{correctcaps(name, ['all'])}: {nextmark},{10.00}\n") #add an entry to the balances file for the new user, with $10.
+  if int(nextmark)==70:
+      amount="421.00"
+      sprint(" YOU ARE THE 70TH CUSTOMER YOU GET $421 FREE")
+  else:
+      amount="10.00"
       sprint(f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
+  file.write(f"{correctcaps(name, ['all'])}: {nextmark},{amount}\n") #add an entry to the balances file for the new user, with $420.
   file.close()
   nextmark+=1
   wipe() #clears the screen
@@ -738,7 +750,8 @@ def access(option, name=""): #script to ask for username and password yes
             file.remove("********\n")
             file.pop(usernum[name])
             fil=open("users.txt", "w")
-            fil.writelines(extra+file[:3]+["********\n"]+file[3:])
+            file[3]=[str(file[3]+"\n")]
+            fil.writelines(extra+file[:3]+["********"]+file[3:])
             fil.close()
 
             file2 = open("balances.txt").readlines()
@@ -809,24 +822,21 @@ def access(option, name=""): #script to ask for username and password yes
 def menu(user):
   balance=getbal(usernum[user])
   logo(11)
-  sprint(f"Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.\n")
+  sprint(f"Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.00\n")
   sprint("""
   1: Deposit
   2: Withdraw
-  3: Check Transactions
-  4: Log Out
-  5: Exit
+  3: Log Out
+  4: Exit
   """, "l")
         
   charbreak=0.01
-  choice_input=checkinput(f"What would you like to do, {correctcaps(user, ['all'])}? ", ["1", "2", "3", "4", "5", "deposit", "withdraw", "check transactions", "log out", "exit", "d", "w", "L", "check", "e", "ct", "c"])
+  choice_input=checkinput(f"What would you like to do, {correctcaps(user, ['all'])}? ", ["1", "2", "3", "4", "deposit", "withdraw", "log out", "exit", "d", "w", "L", "e"])
   if choice_input in ["1", "deposit", "d"]:
       deposit(user)
   elif choice_input in ["2", "withdraw", "w"]:
       withdraw(user)
-  elif choice_input in ["3", "check transactions", "check", "ct", "ct", "c"]:
-      choice_input="Check Transactions"
-  elif choice_input in ["4", "log out", "lo",]:
+  elif choice_input in ["3", "log out", "lo",]:
       sprint(f"Logging out {user}")
       begin()
   else:
@@ -834,17 +844,29 @@ def menu(user):
   menu(user)
 #############################################################################
 
-global screen_width
-global screen_size
-
 try:
-    columns, rows = os.get_terminal_size(0)
-except OSError:
-    columns, rows = os.get_terminal_size(1)
+    os.get_terminal_size()
+    def sprint (input_string, words_or_letters="letters", newline="yes"):
+        space="\n"
+        if newline!="yes":
+            space=""
+        print(input_string, end=space)
+        t(0.045*len(input_string))
+    def tinput(instring, a="frick!"):
+        return input(instring)
+    
+    from os import system
+    import wx
+    app = wx.App(False) # the wx.App object must be created first.
+    col, lin=wx.GetDisplaySize() # returns a tuple
+    system(f'mode con: cols={col} lines={lin}')
+    import keyboard
+    keyboard.press_and_release('F11')
 
-print(f"The size is {columns} columns and {rows} rows. Please do not change it.")
-t(2.5)
+except:
+    tinput("This script is recommended to be run on the command line, using the provided batch file, but if you wish to continue, press Enter: ")
+
 wipe()
 sprint("loading...")
 wipe()
-start("The GREAT Bank", columns, rows)
+start("The GREAT Bank")

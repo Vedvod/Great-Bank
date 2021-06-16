@@ -324,6 +324,21 @@ def clear(number_of_clears=1): #to clear screen without os.system(clr) or whatev
 
 '***7a**'
 def calibsize(): #function to get user to calibrate their screen size for later usage
+    global charbreak #
+    global endbreak
+    try:
+        try:
+            columns, rows = os.get_terminal_size(0)
+        except OSError:
+            columns, rows = os.get_terminal_size(1)
+        endbreak=0
+        charbreak=0
+        global sprset
+        sprset=1
+        sprint(f"The size is {columns} columns and {rows} rows. Please do not change it.")
+        return columns, rows
+    except:
+        pass
     if checkinput("Do you want to quick calibrate the screen size? ") in ["y", "yes"]: #negative response
         chose_size=checkinput("Choose a screen default from 'small', 'medium', and 'large': ", ["small", "s", "medium", "m", "large", "l"])
         global screen_height
@@ -349,10 +364,9 @@ def calibsize(): #function to get user to calibrate their screen size for later 
         return screen_width, screen_height #end
     for i in range(91, 0, -1): #script to callibrate screensize
         print(i) #countdown on screen
-    global charbreak #
+
     olc=charbreak #preserve
     charbreak=0.001
-    global endbreak
     ole=endbreak
     endbreak=0.09
     while True:
@@ -399,7 +413,7 @@ def start(name_of_script="A nameless script, which you forgot to enter a name va
         t(m/100) #wait a for a time that is proportional to m
         print(str(i)+"%") #print percentage loaded
     tline("\n"+str(name_of_script)+" initialised. Enjoy!\n\n") #loaded message
-    local() #call locally defined function that acts as an intepreter between universal and local functions
+    local(screen_width, screen_height) #call locally defined function that acts as an intepreter between universal and local functions
 
 '***8***'
 def liststring(label, first_value, separator, list_of_values): #label: pre  sep lis1  sep lis2  sep lis3...
@@ -690,6 +704,7 @@ def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes
 '***23b*'
 def tline (input_string, words_or_letters="letters", newline="yes"):
     sprint(input_string, words_or_letters, newline)
+
 def sprint (input_string, words_or_letters="letters", newline="yes"):
     fprint(input_string, True, words_or_letters, newline)
 
