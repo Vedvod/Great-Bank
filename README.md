@@ -33,9 +33,12 @@ Last updated: 13:35 16/06/21
 
 # Changelog  
 
+## 0.6
+
+**17/06/21**
+0.6 - Merged with main branch, updated delete to remove balances. The project now almost fully resembles the final design.
+
 ## 0.5
-
-
 
 **16/06/21**  
 0.5.3 - Implemented fully-automatic calibration, which uses the non-standard python modules ['keyboard'](https://pypi.org/project/keyboard/#description) and ['wxPython'](https://pypi.org/project/wxPython/), and the standard module os. The module is installed during the setup (within the batch file), so the user only needs to have internet connection.
@@ -43,13 +46,13 @@ Last updated: 13:35 16/06/21
 0.5.2.1 - Fixed errors with the ask, sprint, and tinput functions. The code runs slightly smoother now.
 
 **14/06/21**  
-0.5.2 - Added auto-calibration for command prompt users. Does not work for IDEs. Also, bugfixing
+0.5.2 - Added auto-calibration for command prompt users. Does not work for IDEs. Also, bugfixing.
 
 **11/06/21**  
-0.5.1.3 - More bugfixing  
+0.5.1.3 - More bugfixing.
 
 **10/06/21**  
-0.5.1.2 - Updated documentation for universal functions  
+0.5.1.2 - Updated documentation for universal functions.
 
 **09/06/21**  
 0.5.1.1 - Added more comments, and did more bugfixing.  
