@@ -1,5 +1,7 @@
 #all the universally applicable functions for all my projects
 from random import choice, randint
+import random as rm
+
 import time
 import sys
 import math
@@ -42,6 +44,7 @@ Implemented Working Functions
                     #additionally, if the letter is an ' i ', it is capitalised
                         #after iterating through every letter, the process is repeated for other sentences, and they are all combined
                             #finally, the code scans the final string for punctuation markers, and then replaces them with the original punctuations.   
+
 
   5 #txtfile(directory) - open a file at directory specified and execute or print per line
         #add path and directory together, then open file at location
@@ -128,6 +131,7 @@ Implemented Working Functions
             #divi must be defined locally
         #x is integer, checked for if in divi
 
+
  21
     #wipe() - clears the screen 
         #first, searches for the noclear file, which indicates that the function should link to clear()
@@ -191,6 +195,7 @@ Implemented Working Functions
             return ((extraspace-int((extraspace/2)))*" "+string+int((extraspace/2))*" ")
         elif bma in ["after", "a", "end"]:
             return (string+extraspace*" ")
+
  
 Legacy functions (redundant/no longer in use, but still interesting/stupid)
 
@@ -198,7 +203,6 @@ Legacy functions (redundant/no longer in use, but still interesting/stupid)
 
  L2 #start (old) - Old system of start, ask user for directory of main folder
 '''
-
 
 
 '***1***'
@@ -210,6 +214,7 @@ def t(time_to_sleep_for): #shorthand for my sanity
         tline("Value can not be converted to floating point!") #fail message
 
 '***2***'
+
 def r(a, b=""): #shorthand for random
   if b=="":
     try:
@@ -231,11 +236,13 @@ def pimport(directory, mode="r"): #open file in specified mode and return conten
     return m
 
 '***4***'
+
 def correctcaps(string, modlist=[]): #a function to correct the capitalisation of a given string, typically multi-sentence.
     final="" #define final as a string
     dotsplit=string.lower().replace(".", "*.").replace("?", "^?").replace("!", "@!").replace(" ", "`` ").split(".") #add markers for punctuation, then split on dots
     quesplit=[]
     if "all" in modlist:
+
         plasplit=[]
         for split in dotsplit:
             split=split.strip().split(" ")[:len(split)]
@@ -322,6 +329,7 @@ def clear(number_of_clears=1): #to clear screen without os.system(clr) or whatev
         print("", end=5*"\n") #print the multiples
     print("", end=remain*"\n") #print the extra
 
+
 '***7a**'
 def calibsize(): #function to get user to calibrate their screen size for later usage
     global charbreak #
@@ -405,6 +413,7 @@ def start(name_of_script="A nameless script, which you forgot to enter a name va
     i=0 #to set i as 0
     while i<100: #while "percent loaded" less than 100
         m=r(1, 63) #choose random number between 1 and 37 to be "loaded" percentage
+
         if i+m>=100: #if "loaded" percent plus already loaded is over 100
             m=100-i #m becomes value required to reach 100
             i=100 #i becomes 100
@@ -413,7 +422,9 @@ def start(name_of_script="A nameless script, which you forgot to enter a name va
         t(m/100) #wait a for a time that is proportional to m
         print(str(i)+"%") #print percentage loaded
     tline("\n"+str(name_of_script)+" initialised. Enjoy!\n\n") #loaded message
+
     local(screen_width, screen_height) #call locally defined function that acts as an intepreter between universal and local functions
+
 
 '***8***'
 def liststring(label, first_value, separator, list_of_values): #label: pre  sep lis1  sep lis2  sep lis3...
@@ -665,6 +676,7 @@ def wipe():
             _ = os.system('clear')
 
 '***22**'
+
 def testforvalue(variable, default_value, replace="no"):
     default_value=str(default_value)
     if replace=="rep":
@@ -673,7 +685,9 @@ def testforvalue(variable, default_value, replace="no"):
     else:
         exec("global "+variable+"\ntry:\n "+variable+"\nexcept:\n "+variable+"="+str(default_value))
 
+
 '***23a**'
+
 def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes"):
     space=""
     if words_letters_or_lines.lower() in ["words", "w"]:
@@ -701,6 +715,7 @@ def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes
     if newline=="yes":
         print("")
 
+
 '***23b*'
 def tline (input_string, words_or_letters="letters", newline="yes"):
     sprint(input_string, words_or_letters, newline)
@@ -714,6 +729,7 @@ def tinput(input_string, letters=""):
     return input("")
 
 '***24***'
+
 def varcheck(var=""):
     if var!="":
         try:
@@ -735,6 +751,7 @@ def varcheck(var=""):
     varcheck()
 
 '***25***'
+
 def filler(string, space, beforemidafter="after", tline="n"):
     bma=beforemidafter #for easier
     string=str(string) #turn the variable into a string for concat, ects
@@ -746,6 +763,7 @@ def filler(string, space, beforemidafter="after", tline="n"):
             return ((extraspace-int((extraspace/2)))*" "+string+int((extraspace/2))*" ")
         elif bma in ["after", "a", "end"]:
             return (string+extraspace*" ")
+
 
 '''
 Legacy Functions (No longer in use)
