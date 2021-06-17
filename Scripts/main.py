@@ -465,14 +465,15 @@ def receipt(user, transact, amount):
   Transaction: {correctcaps(transact)} of ${amount}.
   New Balance: ${getbal(usernum[user])}
   {dm.now().strftime('Great Bank® Ltd.  %Y')}''')
-
     a=True
-
+    i=0
     while a==True:
+        i+=1
         dic={}
         if not os.path.exists(f"receipts/{user}/"):
             os.mkdir(f"receipts/{user}/")
         for count in range(1,4):
+            print(count)
             try:
                 receipt=open(f"receipts/{user}/receipt {count}.txt", "x")
                 receipt.write(transactlog)
@@ -497,24 +498,26 @@ def receipt(user, transact, amount):
             receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
             receipt.write(transactlog)
             receipt.close()
+            a=False
 
 def ask(user, transact, amount):
     receipt(user, transact, amount)
     global transactlog
     logo(1)
     print_receipt = checkinput("Would you like to print a reciept? Y|N: ")
-    if print_receipt.upper() == "Y":
+    if print_receipt in ["y", "yes"]:
         wipe()
-        logo(14)
+        logo(16)
         print(transactlog)
-        input()
+        t(0.5)
+        print("\nPress Ctrl+C when done reading, or wait for 10 seconds to pass.")
+        t(10, ["interrupt"])
         menu(user)  # return to menu
         return  # end
 
-    if print_receipt.upper() == "N":
-        sprint("Thank you for using the Great Bank ATM")
-        menu(user)  # return to menu
-        return  # end
+    sprint("Thank you for using the Great Bank ATM")
+    menu(user)  # return to menu
+    return  # end
 
 #############################################################################
 
@@ -535,7 +538,8 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
 
 
 
-
+    testforvalue("screen_width", 40)
+    testforvalue("screen_height", 50)
     wipe() #runs the wipe function
     try:
         screen_width=columns
@@ -591,7 +595,6 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
     {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
     {gap}+================================================+
     """ #logo 2 (possibly used in future)
-
     if size=="small":
         log=("""+--------+\n  |::::::::|\n  |::Great:|\n  |::Bank::|\n  |::::::::|\n  +--------+""") #small logo
     if rtn in ["y", "yes"]:
@@ -602,7 +605,7 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
         print("") #newlines
     endbreak=ole #reset endbreak
     charbreak=olc #reset charbreak
-
+    
 def local(s_w, s_h):
     wipe()
     global screen_width
@@ -674,7 +677,7 @@ def login(name,password):
 
     sprint(f"This is not the PIN for user {correctcaps(name, ['all'])}. Please try again.") #displays that the user has
                                        #entered the wrong login details
-    access("login", name)
+    access("login")
 
 def register(name,password):
   name=name.strip()
@@ -823,15 +826,14 @@ def menu(user):
   balance=getbal(usernum[user])
   logo(11)
   sprint(f"Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.00\n")
-  sprint("""
+  charbreak=0.01
+  choice_input=checkinput(f"""
   1: Deposit
   2: Withdraw
   3: Log Out
   4: Exit
-  """, "l")
-        
-  charbreak=0.01
-  choice_input=checkinput(f"What would you like to do, {correctcaps(user, ['all'])}? ", ["1", "2", "3", "4", "deposit", "withdraw", "log out", "exit", "d", "w", "L", "e"])
+  
+  What would you like to do, {correctcaps(user, ['all'])}? """, ["1", "2", "3", "4", "deposit", "withdraw", "log out", "exit", "d", "w", "L", "e"])
   if choice_input in ["1", "deposit", "d"]:
       deposit(user)
   elif choice_input in ["2", "withdraw", "w"]:
@@ -840,6 +842,8 @@ def menu(user):
       sprint(f"Logging out {user}")
       begin()
   else:
+      keyboard.press_and_release('F11')
+      system(f'mode con: cols={120} lines={30}')
       sys.exit(f"ATM shut down by user {user}.")
   menu(user)
 #############################################################################
@@ -854,6 +858,47 @@ try:
         t(0.045*len(input_string))
     def tinput(instring, a="frick!"):
         return input(instring)
+    def checkintype(input_string, list_of_types, letter="", slow=True): #repeat until an input is of required type
+        stringlist=[]
+        if slow==True:
+            iner=checktype(tinput(input_string, letter)) #make iner a float or int if possible
+        else:
+            iner=checktype(input(input_string))
+        for value in list_of_types:
+            if type(iner)==value: #if type of input matches requirement
+                return iner #return and end strings
+            stringlist.append(str(value).strip("<cla>").replace("s", "", 2).replace(" ", "").replace("'", "")) #turn types into
+        if float in list_of_types and int not in list_of_types:
+            if type(iner)==int:
+                return float(iner)
+        print(str(type(iner)).strip("<cla>").replace("s", "", 2).replace(" ", "").replace("'", "")+" is incorrect type!") #print fail
+        tline(liststring("Valid","",", ",stringlist)) #fail
+        wipe()
+        logo(4)
+        return checkintype(input_string, list_of_types, letter, slow) #run again
+    def checkinput(input_string, comparison_list=["y", "yes", "n", "no"], modifier_list=[""]): #asks for input until given input is in given list of accepted
+        mods=set(modifier_list)
+        if "modlist" in modifier_list:
+            sprint("modlist - Opens this menu")
+            sprint("pc, preserve, preservecaps - Preserves Capitals")
+            sprint("db, dev, debug, developer - Activates Debug Mode")
+        inn=tinput(str(input_string)) #input of given string
+        innn=inn
+        if len(mods.intersection({"pc", "preserve", "preservecaps"}))==0:
+            innn=innn.lower()
+        if len(mods.intersection({"db", "debug", "dev", "developer"}))>0:
+            print(innn)
+            print(innn in comparison_list)
+        if innn in comparison_list: #if input is in list given, then return it
+            return innn #return input
+        else: #if input is not in given list
+            charbreak=0.01
+            endbreak=0.05
+            tline(str(inn)+" is not a valid response.") #print that it is not in list
+            tline(liststring("Valid","",", ",comparison_list)) #print what's valid
+            wipe()
+            logo(4)
+            return checkinput(input_string, comparison_list) #run again
     
     from os import system
     import wx

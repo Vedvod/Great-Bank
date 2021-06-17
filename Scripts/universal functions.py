@@ -204,17 +204,39 @@ Legacy functions (redundant/no longer in use, but still interesting/stupid)
  L2 #start (old) - Old system of start, ask user for directory of main folder
 '''
 
-
 '***1***'
-def t(time_to_sleep_for): #shorthand for my sanity
-    try:
-        time_to_sleep_for=float(time_to_sleep_for) #it just is
-        time.sleep(time_to_sleep_for) #sleep
-    except: #if fail
-        tline("Value can not be converted to floating point!") #fail message
+def t(time_to_sleep_for, modlist=[]): #shorthand for my sanity
+    from time import sleep
+    mode="normal"
+    if "interrupt" in modlist:
+        mode="interrupt"
+    if mode=="normal":
+        try:
+            time_to_sleep_for=float(time_to_sleep_for) #it just is
+            sleep(time_to_sleep_for) #sleeps
+        except: #if fail
+            tline("Value can not be converted to floating point!") #fail message
+
+    elif mode=="interrupt":
+        try:
+            for i in range(time_to_sleep_for*2):
+                i=i/2
+                try:
+                    if i==int(i):
+                        i=int(i)
+                        if "countdown" in modlist:
+                            print(f'{time_to_sleep_for-i}, ', end="")
+                    sleep(0.5)
+                except KeyboardInterrupt:
+                    print("interrupted!")
+                    return "interrupted", i
+                if i==time_to_sleep_for-0.5:
+                    print(f'0.')
+                    break
+        except:
+            tline("Value can not be converted to floating point!") #fail message
 
 '***2***'
-
 def r(a, b=""): #shorthand for random
   if b=="":
     try:
@@ -236,7 +258,6 @@ def pimport(directory, mode="r"): #open file in specified mode and return conten
     return m
 
 '***4***'
-
 def correctcaps(string, modlist=[]): #a function to correct the capitalisation of a given string, typically multi-sentence.
     final="" #define final as a string
     dotsplit=string.lower().replace(".", "*.").replace("?", "^?").replace("!", "@!").replace(" ", "`` ").split(".") #add markers for punctuation, then split on dots

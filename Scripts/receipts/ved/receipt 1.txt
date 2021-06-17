@@ -5,13 +5,11 @@
   |::Bank::|
   |::::::::|
   +--------+
-
-
-  Date and Time: 06/06/21 at 20:50:50.
+  
+  Date and Time: 06/17/21 at 23:00:09.
   Location: VEDVODS-BOOTCAM branch, machine #3
-  Transaction ID: 108856
+  Transaction ID: 197655
   User: Ved, PIN: 1234
-  Transaction: Deposit of $2310.
-  New Balance: 280771
-
-  Great Bank inc. 2021
+  Transaction: Withdraw of $11324120.
+  New Balance: $10000000
+  Great Bank® Ltd.  2021

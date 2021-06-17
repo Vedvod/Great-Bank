@@ -1,6 +1,6 @@
 ECHO OFF
 cd  "%CD%\Scripts\" & rem #This changes the working directory to the Scripts folder, where the python script is located. This means that the script runs as though run normally.
-cls & echo Great Bank ATM, A script by Sameer Sabri and Ved Dhiman & PING localhost -n 6 >NUL & rem #intro message\
+cls & echo Great Bank ATM & PING localhost -n 1 >NUL & echo A script by Sameer Sabri and Ved Dhiman & PING localhost -n 4 >NUL & rem #intro message
 cls & echo This script requires the module keyboard. If you continue, this will be installed, if not already installed. & pause
 cls & py -m pip install keyboard
 :pythonrun
