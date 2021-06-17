@@ -35,7 +35,8 @@ Last updated: 13:35 16/06/21
 
 ## 0.6
 
-**17/06/21**
+**17/06/21**  
+0.6.1 - Bugfixes, improvements to the ask function and t function.  
 0.6 - Merged with main branch, updated delete to remove balances. The project now almost fully resembles the final design.
 
 ## 0.5
