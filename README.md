@@ -33,13 +33,16 @@ Last updated: 13:35 16/06/21
 
 # Changelog  
 
-## 0.6
+## 0.6 - Polishing Up
+
+**18/06/21**  
+0.6.2 - Changes to dependency installation procedure, now comes packaged with the keyboard wheel file, and installs it within start-up.  
 
 **17/06/21**  
 0.6.1 - Bugfixes, improvements to the ask function and t function.  
 0.6 - Merged with main branch, updated delete to remove balances. The project now almost fully resembles the final design.
 
-## 0.5
+## 0.5 - Readability and Documentation
 
 **16/06/21**  
 0.5.3 - Implemented fully-automatic calibration, which uses the non-standard python modules ['keyboard'](https://pypi.org/project/keyboard/#description) and ['wxPython'](https://pypi.org/project/wxPython/), and the standard module os. The module is installed during the setup (within the batch file), so the user only needs to have internet connection.
@@ -62,7 +65,7 @@ Last updated: 13:35 16/06/21
 **08/06/21**  
 0.5 - Large-scale expansion of the README, a new dedicated branch, and an addition of a batch file to the main directory that streamlines starting the script. Additionally, the script now checks if it is running in python command prompt, and adjusts accordingly.  
 
-## 0.4
+## 0.4 - Menu and Access
 
 **07/06/21**  
 0.4.2 - Added delete functionality, users can now delete their profile.  
@@ -73,6 +76,6 @@ Last updated: 13:35 16/06/21
 0.4.1 - Fixed some bugs.  
 0.4 - Added receipts.  
 
-## 0.3
+## 0.3 - Framework
 
 0.3 and prior - lacks documentation.  
