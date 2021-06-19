@@ -228,6 +228,7 @@ def t(time_to_sleep_for, modlist=[]): #shorthand for my sanity
                             print(f'{time_to_sleep_for-i}, ', end="")
                     sleep(0.5)
                 except KeyboardInterrupt:
+                    t(0.5)
                     print("interrupted!")
                     return "interrupted", i
                 if i==time_to_sleep_for-0.5:
@@ -697,7 +698,6 @@ def wipe():
             _ = os.system('clear')
 
 '***22**'
-
 def testforvalue(variable, default_value, replace="no"):
     default_value=str(default_value)
     if replace=="rep":
@@ -708,7 +708,6 @@ def testforvalue(variable, default_value, replace="no"):
 
 
 '***23a**'
-
 def fprint(input_string, slow="", words_letters_or_lines="letters", newline="yes"):
     space=""
     if words_letters_or_lines.lower() in ["words", "w"]:
@@ -874,3 +873,5 @@ tline(pat+" validated.", "") #confirmation message
 '''
 
 #L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L L 
+if os.path.basename(__file__)=="universal functions.py":
+    input("it worked")

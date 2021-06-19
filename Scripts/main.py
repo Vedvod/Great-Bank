@@ -139,9 +139,9 @@ for combo in userlist: #combo is user name + pin
   except: #If the code under the try
           #statement throws an error
           #or exception the code
-          #below will run This ]
+          #below will run This 
           #except statement catches
-          #all the lines in the .txt
+          #all the lines in the users.txt
           #file which are not user
           #credentials
 
@@ -254,7 +254,7 @@ def getbal(marker, mode="read", value=0): #Defines the function
                                          #to the marker parameter which is
                                          #defined in the function parameters
                                          #above
-                amount=amount.replace(".00", "")
+                amount=amount.replace(".00", "") #clear a double decimal if existent
                 return int(amount) #When the two variables are
                                     #equal the coresponding balance
                                     #will be returned
@@ -320,11 +320,11 @@ def getbal(marker, mode="read", value=0): #Defines the function
 
                     amount=value #sets the amount variable
                                  #to the value variable
-                    try:
-                        while len(amount.split(".")[1])!=2:
-                            amount=str(amount)+"0"
-                    except:
-                        amount=str(amount)+".00"
+                    try: #attempt this
+                        while len(amount.split(".")[1])!=2: #check if there is a decimal, and if it is two zeroes
+                            amount=str(amount)+"0" #until it is two zeroes, add zeroes
+                    except: #if there is no decimal
+                        amount=str(amount)+".00" #add the end
                 baldic[number]=amount #adds the variable number:amount
                                       #to the balance dictionary
                                       #These two variables correspond
@@ -407,124 +407,142 @@ def getbal(marker, mode="read", value=0): #Defines the function
 
 
 
-############################################################################# Class for Transactions
-def deposit(user): #defines the
-    balance=getbal(usernum[user])
-    wipe()
-    logo(2) #logo in corner
-    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to deposit? Type "cancel" to cancel. $').lower() #ask for amount
-    if choice=="cancel": #if exit
+
+############################################################################# Transactions
+        
+def deposit(user): #a function for the user to interact with and add money to their account
+    balance=getbal(usernum[user]) #find the amount of money in their account
+    wipe() #clear screen to allow new content
+    logo(2) #display logo in corner
+    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to deposit? Type "cancel" to cancel. $').lower() #ask the user to submit deposit amount
+    if choice=="cancel": #if the user enters the cancel input
         menu(user) #return to menu
         return #end
-    choice=checktype(choice)
-    if type(choice)==str:
-        sprint("String input is not valid! An integer or float input is required. Please try again.")
-        return deposit(user)
-    if not choice%5 == 0 or not int(choice)>0:
-        sprint("This amount is invalid! Only combinations of cash notes can be accepted! Please try again.")
-        return deposit(user)
-    elif choice%5==0:
-        getbal(usernum[user], "write", balance+int(choice))
-        sprint(f"You deposit ${choice}.00 into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.00")
-        ask(user, "deposit", choice)
+    choice=checktype(choice) #convert choice to the highest type possibe (float > int > str)
+    if type(choice)==str: #if the input type entered is invalid and not "cancel"
+        sprint("String input is not valid! An integer or float input is required. Please try again.") #tell the user that they have entered invalid input
+        return deposit(user) #ask again
+    if not choice%5 == 0 or not int(choice)>0: #if they have entered a float or integer, but it is not a valid cash combination
+        sprint("This amount is invalid! Only combinations of cash notes can be accepted! Please try again.") #tell the user that they have entered invalid input
+        return deposit(user) #ask again
+    elif choice%5==0: #if the cash amount is a valid amount, continue on
+        choice=int(str(choice).replace(".0", "")) #remove the decimal from the end
+        getbal(usernum[user], "write", balance+int(choice)) #write the new balance to the user's line in the balances file
+        sprint(f"You deposit ${choice}.00 into account {correctcaps(user, ['all'])}. Your new balance is ${balance+choice}.00") #successful deposit output message
+        ask(user, "deposit", choice) #function to ask if the user wants to see their receipt for the deposit
+        return #end the function
+    input("wait why is this popped up? Maybe check the deposit function... ") #message that triggers as a debug marker if for some reason the function doesn't end
+
 
 def withdraw(user): #function to deposit
-    balance=getbal(usernum[user])
-    wipe()
-    logo(2) #logo in corner
-    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to withdraw? Type "cancel" to cancel. $').lower() #ask for amount
-    if choice=="cancel": #if exit
+    balance=getbal(usernum[user]) #find the amount of money in their account
+    wipe() #clear screen to allow new content
+    logo(2) #display logo in corner
+    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to withdraw? Type "cancel" to cancel. $').lower() #interacts with user and asks for amount to withdraw
+    if choice=="cancel": #if the user enters the cancel input
         menu(user) #return to menu
         return #end
-    choice=checktype(choice)
-    if type(choice)==str:
-        sprint("String input is not valid! An integer or float input is required. Please try again.")
-        return withdraw(user)
-    if not choice%5 == 0 or not int(choice)>0:
-        sprint("This amount is invalid! Only combinations of cash notes can be withdrawn! Please try again.")
-        return withdraw(user)
-    if choice>balance: #checks for if withdrawing too much
-        sprint(f"This amount is invalid! You are trying to withdraw ${choice}, but you only have ${balance} in your account!")
-        return withdraw(user)       
-    elif choice%5==0:
-        choice=int(str(choice).replace(".0", ""))
-        getbal(usernum[user], "write", balance-int(choice))
-        sprint(f"You withdraw ${choice}.00 from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.00")
-        ask(user, "withdraw", choice)
+    choice=checktype(choice)#convert choice to the highest type possibe (float > int > str)
+    if type(choice)==str: #if the input type entered is invalid and not "cancel"
+        sprint("String input is not valid! An integer or float input is required. Please try again.") #tell the user that they have entered invalid input
+        return withdraw(user) #ask again
+    if not (choice%10==0 and choice > 40) or not choice>0: #if they have entered a float or integer, but it is not a valid cash combination (20s and 50s)
+        sprint("This amount is invalid! Only combinations of $20 and $50 cash notes can be withdrawn! Please try again.") #tell user what input is valid
+        return withdraw(user) #ask again
+    if choice > balance: #checks for if the user is withdrawing too much
+        sprint(f"This amount is invalid! You are trying to withdraw ${choice}, but you only have ${balance} in your account!") #tell the user that they do not have enough money
+        return withdraw(user) #ask again
+    elif choice%5==0: #if the cash amount is a valid amount, continue on 
+        choice=int(str(choice).replace(".0", "")) #remove the decimal from the end
+        getbal(usernum[user], "write", balance-int(choice)) #write the new balance to the user's line in the balances file
+        sprint(f"You withdraw ${choice}.00 from account {correctcaps(user, ['all'])}. Your new balance is ${balance-choice}.00") #successful withdrawl output message
+        ask(user, "withdraw", choice) #function to ask if the user wants to see their receipt for the withdrawl
 
-def receipt(user, transact, amount):
-    global transactlog
-    now = dm.now() # current date and time
+
+def receipt(user, transact, amount): #function to make a receipt based on the input user, process, and amount
+    now = dm.now() #get a variable from current date and time
     transactlog=(f'''
   {logo(0, "small", "y")}
   
-  {dm.now().strftime('Date and Time: %D at %H:%M:%S.')}
-  Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)}
-  Transaction ID: {r(20000, 500000)}
+  {now.strftime('Date and Time: %D at %H:%M:%S.')}
+  Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)} 
+  Transaction ID: {r(10000, 99999)}
   User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
   Transaction: {correctcaps(transact)} of ${amount}.
   New Balance: ${getbal(usernum[user])}
-  {dm.now().strftime('Great Bank® Ltd.  %Y')}''')
-    a=True
-    i=0
-    while a==True:
-        i+=1
-        dic={}
-        if not os.path.exists(f"receipts/{user}/"):
-            os.mkdir(f"receipts/{user}/")
-        for count in range(1,4):
-            print(count)
-            try:
-                receipt=open(f"receipts/{user}/receipt {count}.txt", "x")
-                receipt.write(transactlog)
-                receipt.close()
-                a=False
-                break
-            except:
-                e=0
-                for line in open(f"receipts/{user}/receipt {count}.txt"):
-                    try:
-                        dic[line.strip("Date and Time: ").split(" ")[2]]=count
-                        break
-                    except:
-                        e+=1
-                count+=1
-        if a==True:
-            lis=[]
-            for element in dic:
-                lis.append(element)
-                lis=sorted(lis)
-            count=dic[lis[0]]
-            receipt=open(f"receipts/{user}/receipt {count}.txt", "w")
-            receipt.write(transactlog)
-            receipt.close()
-            a=False
+  {now.strftime('Great Bank® Ltd.  %Y')}''') #an f-string that fills in a template to construct a reciept for the user.
+    #line 1 adds the small logo to the corner of the receipt
+    #line 3 adds the Date and Time
+    #line 4 adds the Location, taking the name of the user's computer and a random number between 1 and 6
+    #line 5 generates a random number as the Transaction ID
+    #line 6 adds the user's credentials to the receipt?
+    #line 7 informs the user as to the transaction they have done and how much money was involved
+    #line 8 informs the user of their new balance
+    #line 9 is a fake registed company name and the year for realism
 
-def ask(user, transact, amount):
-    receipt(user, transact, amount)
-    global transactlog
-    logo(1)
-    print_receipt = checkinput("Would you like to print a reciept? Y|N: ")
-    if print_receipt in ["y", "yes"]:
-        wipe()
-        logo(16)
-        print(transactlog)
-        t(0.5)
-        print("\nPress Ctrl+C when done reading, or wait for 10 seconds to pass.")
-        t(10, ["interrupt"])
-        menu(user)  # return to menu
-        return  # end
+    a=True #boolean
+    i=0 #
+    dic={} #
+    slots=3
+    while a==True: #until a is not true
+        i+=1 #count
+        if not os.path.exists(f"receipts/{user}/"): #Checks for if a user folder exists
+            os.mkdir(f"receipts/{user}/") #makes a directory for the user if none exists
+        for count in range(1, slots+1): #repeat three times, for reciept 1, receipt 2, and receipt 3
+            try: #attempt to make a new file with count as the receipt number
+                receipt=open(f"receipts/{user}/receipt {count}.txt", "x") #test if receipt count exists already, if it does, throws exception
+                receipt.write(transactlog) #if it does not, writes the receipt contents into it
+                receipt.close() #closes the file
+                a=False #makes a not true so that the function goes to end 
+                break #exit for loop
+            except: #if the file already exists
+                for line in open(f"receipts/{user}/receipt {count}.txt"): #opens the file that is known to exist
+                    try: #for every line, checks if it has the date and time on it 
+                        dic[line.strip("Date and Time: ").split(" ")[2]]=count #if it is the correct line, extracts date and time, exception is thrown otherwise
+                        break #end for loop
+                    except: #if it is the wrong line
+                        pass #do nothing
+                count+=1 #increment to next receipt
 
-    sprint("Thank you for using the Great Bank ATM")
-    menu(user)  # return to menu
-    return  # end
+        if a==True: #will run if all receipt slots are taken
+            lis=[] #define an empty list
+            for element in dic: #each time extracted corresponds to the receipt number it was extracted from
+                lis.append(element) #make a list from all the keys
+                lis=sorted(lis) #sort the list (to find the oldest one)
+            count=dic[lis[0]] #sets receipt number to that of oldest receipt
+            receipt=open(f"receipts/{user}/receipt {count}.txt", "w") #overwrite the receipt
+            receipt.write(transactlog) #write to the receipt
+            receipt.close() #close file
+            a=False #end the while loop
+    
+    return transactlog #for ask function
+
+def ask(user, transact, amount): #function to ask the user if they want to see the receipt
+    transactlog=receipt(user, transact, amount) #get contents thst were written to receipt
+    logo(2) # logo in corner
+    print_receipt = checkinput("Would you like to print a reciept? Y|N: ") #ask the user if they wish to see the receipt
+    if print_receipt in ["y", "yes"]: #if they answer positively
+        wipe() #clear screen to make space for receipt
+        logo(16) #logo in corner
+        print(transactlog) #print the receipt's contents
+        t(0.5) #wait a small bit of time
+        print("\nPress Ctrl+C when done reading, or wait for 10 seconds to pass.") #tell user what is happening with wait
+        t(10, ["interrupt"]) #wait for 10 seconds, or (due to interrupt parameter) until KeyboardInterrupt is thrown
+        menu(user)  #return to the menu
+        return  #end
+
+    #if negative input
+    sprint("Thank you for using the Great Bank ATM") #end message
+    menu(user)  #return to the menu
+    return  #end
 
 #############################################################################
 
 
 
 
-############################################################################# Class for Aesthetics
+############################################################################# Class for Miscellaneous functions
+
 def logo(height_in, size="large", rtn="no"): #Defines the logo() function
                                              #to print the logo in the
                                              #corner of the screen -Ved
@@ -535,24 +553,21 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
 
 
                                              #To use the function in combination
-
-
-
-    testforvalue("screen_width", 40)
-    testforvalue("screen_height", 50)
+ 
+    testforvalue("screen_height", 50) #set values for screen_width and screen_height if none exist already
     wipe() #runs the wipe function
-    try:
-        screen_width=columns
-    except:
-        screen_width=40
+    try: #attempt to set the screen_width to the columns parameter
+        screen_width=columns #try to do it
+    except: #if it can't (maybe logo invoked separately?) then 
+        screen_width=40 #set screen_width to 40 as a default
     global charbreak #charbreak for the sprint function
     olc=charbreak #preserve charbreak
     charbreak=0 #no pause between letter prints
     global endbreak #for sprint
     ole=endbreak #preserve endbreak
     endbreak=0 #no pause between lines
-    for i in range(int(screen_width/60)):
-        print("")
+    for i in range(int(screen_width/60)): #repeat for 1/60th of the screen width
+        print("") #add a spacer to top
     gap=int(screen_width/80)*" " #find the gap from the side of the screen
     log=(f'''
     {gap}+================================================+
@@ -595,29 +610,31 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
     {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
     {gap}+================================================+
     """ #logo 2 (possibly used in future)
-    if size=="small":
-        log=("""+--------+\n  |::::::::|\n  |::Great:|\n  |::Bank::|\n  |::::::::|\n  +--------+""") #small logo
-    if rtn in ["y", "yes"]:
+
+
+    if size=="small": #if asking for small logo
+        log=("""+--------+\n  |::::::::|\n  |::Great:|\n  |::Bank::|\n  |::::::::|\n  +--------+""") #small logo (done in this format because unicode can't map to linebreaks?)
+    if rtn in ["y", "yes"]: #if returning
         return log
-    for line in log.split("/n"):
+    for line in log.split("/n"): #print the logo line by line?
         print(line)
     for j in range((screen_height-height_in)-20): #loop to space up the logo
         print("") #newlines
     endbreak=ole #reset endbreak
     charbreak=olc #reset charbreak
-    
-def local(s_w, s_h):
-    wipe()
-    global screen_width
-    global screen_height
-    screen_width=s_w
-    screen_height=s_h
 
-    gap1=int((screen_width-128)/2)*" "
-    gap2=int((screen_width-96)/2)*" "
-    gap3=int((screen_width-40)/2)*" "
-    print(int((screen_height-40)/4)*"\n", end="")
-    print(f'''                                                                                                                                                                                                                                                              
+    
+def local(s_w=32, s_h=38): #locsl function, this reads between universal start function and the local functions, starting the process.
+    wipe() #clear the screen for more contnet
+    global screen_width #
+    global screen_height #
+    screen_width=s_w #set
+    screen_height=s_h #set
+
+    gap1=int((screen_width-128)/2)*" " #spacingfrom the side of the screen for 'Great'
+    gap2=int((screen_width-96)/2)*" " #spacing from the side of the screen for 'Bank'
+    print(int((screen_height-40)/4)*"\n", end="") #spacer from the top of the screen to center the text
+    print(f'''
     {gap1}        GGGGGGGGGGGGG                                                                                      tttt 
     {gap1}     GGG::::::::::::G                                                                                    ttt:::t
     {gap1}   GG:::::::::::::::G                                                                                    t:::::t
@@ -635,7 +652,7 @@ def local(s_w, s_h):
     {gap1}     GGG::::::GGG:::G      r:::::r                   ee:::::::::::::e        a::::::::::aa:::a             tt:::::::::::tt
     {gap1}        GGGGGG   GGGG      rrrrrrr                     eeeeeeeeeeeeee         aaaaaaaaaa  aaaa               ttttttttttt
     ''')
-    print(f'''                                                                                           
+    print(f'''
     {gap2}BBBBBBBBBBBBBBBBB                                                      kkkkkkkk
     {gap2}B::::::::::::::::B                                                     k::::::k
     {gap2}B::::::BBBBBB:::::B                                                    k::::::k
@@ -663,7 +680,8 @@ def local(s_w, s_h):
 
 
 
-############################################################################# Class for User Credentials
+############################################################################# User Credentials
+    
 def login(name,password):
   logo(1)
   if int(userdic[name])==int(password): #This checks if the login details are correct based on the dictionary made at start of script (and modified in register, maybe)
@@ -678,6 +696,7 @@ def login(name,password):
     sprint(f"This is not the PIN for user {correctcaps(name, ['all'])}. Please try again.") #displays that the user has
                                        #entered the wrong login details
     access("login")
+
 
 def register(name,password):
   name=name.strip()
@@ -712,17 +731,21 @@ def register(name,password):
 
   login(name,password) #runs the login function
 
+
 def begin(something=""): #the beginning of the whole login thing
   if something!="": #this is a check to see if a login/register decision has already been specified. If it has, run that and end.
     access(something)
     return
   logo(1)
-  access(checkinput("""Would you like to "login", "register", or "delete"? """, ["login", "register", "delete", "l", "r", "d"])) #Prompts user to input either, only asked if not specified
+  access(checkinput("""Would you like to "login", "register", or "delete"? """, ["login", "register", "delete", "l", "r", "d", "exit"])) #Prompts user to input either, only asked if not specified
+
   
 def access(option, name=""): #script to ask for username and password yes
   option=option.lower()
   wipe()
   logo(3)
+  if option=="exit":
+      sys.exit("exited by initial menu")
   if option=="l":
       option="login"
   elif option=="r":
@@ -738,8 +761,6 @@ def access(option, name=""): #script to ask for username and password yes
       begin()
       return
 
-
-
   if option in ["delete", "d"]:
     global usernum
     if not name in usernum:
@@ -747,28 +768,56 @@ def access(option, name=""): #script to ask for username and password yes
         begin()
     else:
         if int(tinput(f"To delete {name}, enter the PIN. "))==int(userdic[name]):
-            file = open("users.txt").readlines() #a+ Opens a file for both appending and reading.
-            extra=file[:file.index("**\n")+1]
-            file = file[file.index("**\n")+1:]
-            file.remove("********\n")
-            file.pop(usernum[name])
-            fil=open("users.txt", "w")
-            file[3]=[str(file[3]+"\n")]
-            fil.writelines(extra+file[:3]+["********"]+file[3:])
-            fil.close()
+            try:
+                file = open("users.txt").readlines() #a+ Opens a file for both appending and reading.
+                extra = file[:file.index("**\n")+1] #save everything above the first divisor
+                file = file[file.index("**\n")+1:] #remove everything above the divisior
+                file.remove("********\n") #remove the divisor between main accounts and extra accounts
+                for count, elem in enumerate(file[usernum[name]+1:], usernum[name]):
+                    elem=elem.split(",")
+                    elem=[elem[0]]+[elem[1]]+[str(int(elem[2])-1)+"\n"]
+                    elem=",".join(elem)
+                    file[count+1] = elem
+                file.pop(usernum[name])
+                fil=open("users.txt", "w")
+                try:
+                    ex=["\n"+str(file[3])]
+                except:
+                    ex=[]
+                fil.writelines(extra+file[:3]+["********"]+ex)
+                fil.close()
+            except:
+                print("Part A failed")
 
-            file2 = open("balances.txt").readlines()
-            file2.pop(usernum[name])
-            fil=open("balances.txt", "w")
-            fil.writelines(file2)
-            fil.close()
-            sprint(f"User {name} deleted!")
-            begin()
+            try:
+                file2 = open("balances.txt").readlines()
+                for count, elem in enumerate(file2[usernum[name]+1:], usernum[name]):
+                    print(file2, count, elem)
+                    ex, elem=elem.split(" ")
+                    elem=elem.split(",")
+                    elem=[str(int(elem[0])-1)]+[elem[1]+"\n"]
+                    elem=",".join(elem)
+                    file2[count+1] = f'{ex} {elem}'
+                fil=open("balances.txt", "w")
+                fil.writelines(file2)
+                fil.close()
+                input("Breaker B2")
+                usernum.pop(name)
+                print(usernum[usernum[name]+1:])
+                for elem in usernum[usernum[name]+1:]:
+                    print(elem)
+                    usernum[elem]=usernum[elem]-1
+                file2.pop(usernum[name])
+                input(usernum)
+                sprint(f"User {name} deleted!")
+                begin()
+
+            except:
+                fil.close()
+                sys.exit(input("Part B failed"))
         else:
             sprint("This is not the PIN!")
             access("delete", name)
-
-
 
   if option in ["login", "l"] : #Checks what the user has input
                                 #and runs the next script based on
@@ -813,27 +862,29 @@ def access(option, name=""): #script to ask for username and password yes
         logo(2)
 
     register(name,password) #runs the register function
+
 #############################################################################
 
 
 
 
+############################################################################# Menu
 
-
-
-############################################################################# Class for Menu
 def menu(user):
   balance=getbal(usernum[user])
   logo(11)
-  sprint(f"Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.00\n")
   charbreak=0.01
-  choice_input=checkinput(f"""
+  
+  choice_input=checkinput(f"""Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.00 
+
   1: Deposit
   2: Withdraw
   3: Log Out
   4: Exit
   
   What would you like to do, {correctcaps(user, ['all'])}? """, ["1", "2", "3", "4", "deposit", "withdraw", "log out", "exit", "d", "w", "L", "e"])
+
+  charbreak=0.4
   if choice_input in ["1", "deposit", "d"]:
       deposit(user)
   elif choice_input in ["2", "withdraw", "w"]:
@@ -846,16 +897,28 @@ def menu(user):
       system(f'mode con: cols={120} lines={30}')
       sys.exit(f"ATM shut down by user {user}.")
   menu(user)
+
 #############################################################################
 
-try:
-    os.get_terminal_size()
-    def sprint (input_string, words_or_letters="letters", newline="yes"):
+#ask("ved", "robbery", 21320)
+
+import stat
+import shutil
+mypath ="C:/noclear"
+fname = mypath + "/" + "noclear.txt"
+
+
+try: #all of this runs if the user is using the command prompt
+##########################################################################################################################################################
+
+    os.get_terminal_size() #this functiins throws an exception if the script is not running in terminal
+    def sprint (input_string, words_or_letters="letters", newline="yes"): #this redefines the sprint function to be terminal-friendly
         space="\n"
         if newline!="yes":
             space=""
         print(input_string, end=space)
         t(0.045*len(input_string))
+    
     def tinput(instring, a="frick!"):
         return input(instring)
     def checkintype(input_string, list_of_types, letter="", slow=True): #repeat until an input is of required type
@@ -899,17 +962,35 @@ try:
             wipe()
             logo(4)
             return checkinput(input_string, comparison_list) #run again
+    try: #attempt to delete file
+      try:
+          shutil.rmtree(mypath)
+      except:
+          os.chmod(mypath, stat.S_IWRITE)
+          shutil.rmtree(mypath)
+    except:
+        pass #if the file does not exist
     
-    from os import system
-    import wx
+    ##############################################################
+    # obtained from https://stackoverflow.com/a/3129494
+    import wx #import WxPython to make an app and find the monitor size
     app = wx.App(False) # the wx.App object must be created first.
     col, lin=wx.GetDisplaySize() # returns a tuple
-    system(f'mode con: cols={col} lines={lin}')
-    import keyboard
-    keyboard.press_and_release('F11')
-
-except:
-    tinput("This script is recommended to be run on the command line, using the provided batch file, but if you wish to continue, press Enter: ")
+    ##############################################################
+    
+    from os import system #import system to modify the os atributes
+    system(f'mode con: cols={col} lines={lin}') #change the size of the terminal window
+    import keyboard #import the keyboard module, allowing the script to send keystrokes
+    keyboard.press_and_release('F11') #this fullscreens the terminal window
+    
+##########################################################################################################################################################
+except: #this runs if they are not using the command prompt
+    try: #attempt to make a file that triggers the clear() function
+      os.makedirs(mypath,0o777) #make a folder for the file
+      open(fname,"w").close() #make a marker file
+    except: #if the file already exists
+        pass
+    tinput("This script is recommended to be run on the command line, using the provided batch file, but if you wish to continue, press Enter: ") #Tell user 
 
 wipe()
 sprint("loading...")
