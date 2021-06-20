@@ -1,0 +1,15 @@
+
+  +--------+
+  |::::::::|
+  |::Great:|
+  |::Bank::|
+  |::::::::|
+  +--------+
+  
+  Date and Time: 06/17/21 at 23:01:58.
+  Location: VEDVODS-BOOTCAM branch, machine #1
+  Transaction ID: 65539
+  User: Ved, PIN: 1234
+  Transaction: Deposit of $5.
+  New Balance: $10000005
+  Great Bank® Ltd.  2021
