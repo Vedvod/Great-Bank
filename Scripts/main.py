@@ -4,9 +4,6 @@ import sys  # imports sys module
 import time  # imports time module
 from datetime import datetime as dm
 
-open("users.txt", "w").writelines(open("users - Copy.txt").readlines())
-open("balances.txt", "w").writelines(open("balances - Copy.txt").readlines())
-
 ######################################################################### Code for Universal Functions
 try: #when a function is called and it is
      #not defined inside the code
@@ -113,6 +110,7 @@ global endbreak  #makes endbreak global
 charbreak=0.025
 
 ###########################################################################
+
 
 
 ############################################################################ Class for Balance
@@ -741,7 +739,7 @@ def begin(something=""): #the beginning of the whole login thing
     access(something)
     return
   logo(1)
-  access(checkinput("""Would you like to "login", "register", or "delete"? """, ["login", "register", "delete", "l", "r", "d", "exit"])) #Prompts user to input either, only asked if not specified
+  access(checkinput("""Would you like to "login" to, "register", or "delete" a user? """, ["login", "register", "delete", "l", "r", "d", "exit"])) #Prompts user to input either, only asked if not specified
 
   
 def access(option, name=""): #script to ask for username and password
@@ -766,8 +764,12 @@ def access(option, name=""): #script to ask for username and password
 
   if option in ["delete", "d"]:
     global usernum
-    if not name in usernum:
+    global userdic
+    if not name in userdic:
         sprint("This user does not exist! Please try again.")
+        return begin()
+    elif name.lower() in ["sameer", "dunne", "ved"]:
+        sprint("This user is an essential user, and can not be deleted! Please try again.")
         return begin()
     else:
         PIN = tinput(f'To delete {name}, enter the PIN, or "cancel" to cancel: ')
@@ -805,14 +807,14 @@ def access(option, name=""): #script to ask for username and password
                     elem=",".join(elem)
                     file2[count+1] = f'{ex} {elem}'
                 file2.pop(usernum[name])
-
                 usernum=dict(sorted(usernum.items(), key=lambda x: x[1]))
                 for count, elem in enumerate(usernum):
                     if count<=usernum[name]:
                         continue
                     usernum[elem]=usernum[elem]-1
                 usernum.pop(name)
-                file2[len(file2)-1]=file2[len(file2)-1].strip("\n")
+                userdic.pop(name)
+                file2[len(file2)-1]="\n"+str(file2[len(file2)-1].strip("\n"))
                 open("balances.txt", "w").writelines(file2)
                 global nextmark
                 nextmark-=1
