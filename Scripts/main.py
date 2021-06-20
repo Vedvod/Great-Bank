@@ -4,6 +4,9 @@ import sys  # imports sys module
 import time  # imports time module
 from datetime import datetime as dm
 
+open("users.txt", "w").writelines(open("users - Copy.txt").readlines())
+open("balances.txt", "w").writelines(open("balances - Copy.txt").readlines())
+
 ######################################################################### Code for Universal Functions
 try: #when a function is called and it is
      #not defined inside the code
@@ -250,12 +253,13 @@ def getbal(marker, mode="read", value=0): #Defines the function
             number=int(number) #This converts the user
                                #id into an integer
 
+            print(int(number), int(marker))
             if int(number)==int(marker): #This checks if the user id is equal
                                          #to the marker parameter which is
                                          #defined in the function parameters
                                          #above
                 amount=amount.replace(".00", "") #clear a double decimal if existent
-                return int(amount) #When the two variables are
+                return int(amount)  #When the two variables are
                                     #equal the coresponding balance
                                     #will be returned
                                     #the amount variable is the balance
@@ -740,7 +744,7 @@ def begin(something=""): #the beginning of the whole login thing
   access(checkinput("""Would you like to "login", "register", or "delete"? """, ["login", "register", "delete", "l", "r", "d", "exit"])) #Prompts user to input either, only asked if not specified
 
   
-def access(option, name=""): #script to ask for username and password yes
+def access(option, name=""): #script to ask for username and password
   option=option.lower()
   wipe()
   logo(3)
@@ -758,16 +762,18 @@ def access(option, name=""): #script to ask for username and password yes
     print(f"\n{correctcaps(option)}:")
     name = tinput("""Enter your name, or "cancel" to cancel: """).lower() #prompts the user to input their name
   if name=="cancel":
-      begin()
-      return
+      return begin()
 
   if option in ["delete", "d"]:
     global usernum
     if not name in usernum:
         sprint("This user does not exist! Please try again.")
-        begin()
+        return begin()
     else:
-        if int(tinput(f"To delete {name}, enter the PIN. "))==int(userdic[name]):
+        PIN = tinput(f'To delete {name}, enter the PIN, or "cancel" to cancel: ')
+        if PIN=="cancel":
+            return begin()
+        if int(PIN)==int(userdic[name]):
             try:
                 file = open("users.txt").readlines() #a+ Opens a file for both appending and reading.
                 extra = file[:file.index("**\n")+1] #save everything above the first divisor
@@ -775,46 +781,46 @@ def access(option, name=""): #script to ask for username and password yes
                 file.remove("********\n") #remove the divisor between main accounts and extra accounts
                 for count, elem in enumerate(file[usernum[name]+1:], usernum[name]):
                     elem=elem.split(",")
-                    elem=[elem[0]]+[elem[1]]+[str(int(elem[2])-1)+"\n"]
+                    elem=[str(elem[0])]+[elem[1]]+[str(int(elem[2])-1)]
                     elem=",".join(elem)
                     file[count+1] = elem
+                print(file)
                 file.pop(usernum[name])
-                fil=open("users.txt", "w")
                 try:
-                    ex=["\n"+str(file[3])]
-                except:
                     ex=[]
-                fil.writelines(extra+file[:3]+["********"]+ex)
-                fil.close()
+                    for count, elem in enumerate(file[3:], 3):
+                        ex.append("\n"+str(elem))
+                except:
+                    pass
+                open("users.txt", "w").writelines(extra+file[:3]+["********"]+ex)
             except:
                 print("Part A failed")
 
             try:
                 file2 = open("balances.txt").readlines()
                 for count, elem in enumerate(file2[usernum[name]+1:], usernum[name]):
-                    print(file2, count, elem)
                     ex, elem=elem.split(" ")
                     elem=elem.split(",")
-                    elem=[str(int(elem[0])-1)]+[elem[1]+"\n"]
+                    elem=[str(int(elem[0])-1)]+[elem[1]]
                     elem=",".join(elem)
                     file2[count+1] = f'{ex} {elem}'
-                fil=open("balances.txt", "w")
-                fil.writelines(file2)
-                fil.close()
-                input("Breaker B2")
-                usernum.pop(name)
-                print(usernum[usernum[name]+1:])
-                for elem in usernum[usernum[name]+1:]:
-                    print(elem)
-                    usernum[elem]=usernum[elem]-1
                 file2.pop(usernum[name])
-                input(usernum)
-                sprint(f"User {name} deleted!")
-                begin()
 
+                usernum=dict(sorted(usernum.items(), key=lambda x: x[1]))
+                for count, elem in enumerate(usernum):
+                    if count<=usernum[name]:
+                        continue
+                    usernum[elem]=usernum[elem]-1
+                usernum.pop(name)
+                file2[len(file2)-1]=file2[len(file2)-1].strip("\n")
+                open("balances.txt", "w").writelines(file2)
+                global nextmark
+                nextmark-=1
+                sprint(f"User {name} deleted!")
             except:
-                fil.close()
                 sys.exit(input("Part B failed"))
+            return begin()
+
         else:
             sprint("This is not the PIN!")
             access("delete", name)
@@ -843,25 +849,22 @@ def access(option, name=""): #script to ask for username and password yes
       begin("register")
     password="0"
     while len(str(password))!=4 or password.isdigit() == False:
+        wipe()
+        logo(2)
+        print("Register: ")
         password = str(tinput(f"Enter a new PIN for user {correctcaps(name, ['all'])}: ")) #prompts the user to input
-                                                                                                  #their password
+        if password=="cancel":                                                                   #their password
+            return begin()
         if password.isdigit() == False:
             sprint("The password must only be a 4 character digit")
             sprint("For example: 1234")
-            wipe()
-            logo(2)
-            print("Register: ")
             continue
 
         if len(password)==4:
-            break
+            return register(name,password) #runs the register function'
+
         else:
             sprint("This PIN is the wrong length! The PIN needs to be four digits long and must only be digits.")
-
-        wipe()
-        logo(2)
-
-    register(name,password) #runs the register function
 
 #############################################################################
 
