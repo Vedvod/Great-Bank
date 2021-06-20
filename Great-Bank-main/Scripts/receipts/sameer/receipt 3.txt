@@ -1,0 +1,15 @@
+
+  +--------+
+  |::::::::|
+  |::Great:|
+  |::Bank::|
+  |::::::::|
+  +--------+
+  
+  Date and Time: 06/20/21 at 20:01:22.
+  Location: LAPTOP-FHAS41PR branch, machine #3 
+  Transaction ID: 86905
+  User: Sameer, PIN: 4321
+  Transaction: Deposit of $1234567890.
+  New Balance: $1234372526512580
+  Great Bank® Ltd.  2021
