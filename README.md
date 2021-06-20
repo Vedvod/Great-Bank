@@ -24,9 +24,9 @@ This repository is a storage for the files of our SDD Preliminary Course Assignm
 The logo features the large initials GB, and the full name in small text below.
 
 # Instructions
-First, [download the ZIP file from the repository](https://github.com/Vedvod/Great-Bank/archive/refs/heads/Readability-and-Documentation.zip), and extract the folder inside. The folder can be extracted to any location, as long as the hierarchy is not modified for the [batch file](https://github.com/Vedvod/Great-Bank/blob/Readability-and-Documentation/Run-Me!.bat) and the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation/Scripts). Having extracted the folder, run the [Run-Me!.bat file](https://github.com/Vedvod/Great-Bank/blob/Readability-and-Documentation/Run-Me!.bat). This will initiate the program. The script files can be found in the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation/Scripts), and the documentation is within the [main directory](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation).  
-Make sure to run the [toggleclear.py file](https://github.com/Vedvod/Great-Bank/blob/Readability-and-Documentation/toggleclear.py) if running the script on an IDE that does not support os.system('clear') or os.system('cls'), such as IDLE, or PyCharm. This will substitute the screen clear for newlines, which, while less effective, will function properly for these IDEs.  
-Receipts from transactions can be found in the [receipts directory](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation/Scripts/receipts) within the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/Readability-and-Documentation/Scripts). Each user has three receipt slots, after which the oldest receipt will be overwritten.  
+First, [download the ZIP file from the repository](https://github.com/Vedvod/Great-Bank/archive/refs/heads/main.zip), and extract the folder inside. The folder can be extracted to any location, as long as the hierarchy is not modified for the [batch file](https://github.com/Vedvod/Great-Bank/blob/main/Run-Me!.bat) and the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/main/Scripts). Having extracted the folder, run the [Run-Me!.bat file](https://github.com/Vedvod/Great-Bank/blob/main/Run-Me!.bat). This will initiate the program. The script files can be found in the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/main/Scripts), and the documentation is within the [main directory](https://github.com/Vedvod/Great-Bank/tree/main).  
+Make sure to run the [toggleclear.py file](https://github.com/Vedvod/Great-Bank/blob/main/toggleclear.py) if running the script on an IDE that does not support os.system('clear') or os.system('cls'), such as IDLE, or PyCharm. This will substitute the screen clear for newlines, which, while less effective, will function properly for these IDEs.  
+Receipts from transactions can be found in the [receipts directory](https://github.com/Vedvod/Great-Bank/tree/main/Scripts/receipts) within the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/main/Scripts). Each user has three receipt slots, after which the oldest receipt will be overwritten.  
 Our documentation can (will) be found on the [logbook document](https://docs.google.com/document/d/14dr7cmlmFfUxpMpVZmCA-mB59K0Lx-MyVKvaO-z-XV4/). This documentation will be updated as the project progresses.
 
 Last updated: 13:35 16/06/21
@@ -34,6 +34,12 @@ Last updated: 13:35 16/06/21
 # Changelog  
 
 ## 0.6 - Polishing Up
+
+**20/06/21**
+0.6.3 - Finished delete function completely, more bugfixing and commenting.
+
+**19/06/21**
+0.6.2.1 - Commenting, bugfixing, renewal of work on delete function.
 
 **18/06/21**  
 0.6.2 - Changes to dependency installation procedure, now comes packaged with the keyboard wheel file, and installs it within start-up.  
