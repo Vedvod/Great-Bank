@@ -34,6 +34,8 @@ Last updated: 13:35 16/06/21
 # Changelog  
 
 ## 0.6 - Polishing Up
+**21/06/21**
+0.6.3.1 - Fixed up code done yesterday, yet more bugfixing.
 
 **20/06/21**
 0.6.3 - Finished delete function completely, more bugfixing and commenting.
