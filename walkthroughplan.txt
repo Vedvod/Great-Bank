@@ -1,0 +1,9 @@
+Step 1: RUN THE BATCH FILE
+Step 2a: Register, or Log in
+Step 3: Now the menu appears, enter 2
+Step 4: Withdraw appears, enter a valid amount. A valid amount is a multiple of 10 greater than 40
+Step 5: Receipt appears.
+Step 6: Log out.
+Step 7: close the file.
+
+os.environ['COMPUTERNAME']
