@@ -342,7 +342,7 @@ def clear(number_of_clears=1): #to clear screen without os.system(clr) or whatev
         print("Defaulting to 64 lines.")
         screen_height=64*number_of_clears
         remain=screen_height%5
-    try: #if remainder ≠ 0
+    try: #if remainder != 0
         (remain)/(remain) #0 not divisible by 0
         reps=int((screen_height-remain)/5) #get nearest (lower) multiple of 5
     except: #if remainder = 0

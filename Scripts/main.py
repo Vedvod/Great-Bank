@@ -30,7 +30,7 @@ import keyboard  #import the keyboard
                  #send keystrokes
 
 #########################################################################
-real_print=0
+
 
 
 
@@ -224,19 +224,18 @@ def getbal(marker, mode="read", value=0): #Defines the function
 
 
 
-    balance=open("balances.txt").readlines() #Opens the balances.txt file
+    balances=open("balances.txt") #Opens the balances.txt file
 
     if mode in ["r", "read"]: #Mode is thte optional parameter
                               #for the open() function.
                               #If no parameter is set then it
                               #will default to open and
                               #read the file
-        
-        for line in balance: #Balanes is balances.txt file
+
+        for line in balances: #Balanes is balances.txt file
                               #check through every line to
                               #see if it has an
                               #actual balance attatched to it
-
 
             try: #When there is a balance
                  #attatched to the line the
@@ -282,19 +281,19 @@ def getbal(marker, mode="read", value=0): #Defines the function
                                   #process otherwise an exception
                                   #will be thrown and the code
                                   #will not run
-            
+
             number, amount=line.split(",") #This split the user id and
                                            #the balance on the basis
                                            #of , and seperates them
                                            #into two different lists
 
             number=int(number) #This converts the user
-                               #id into an 
+                               #id into an integer
+
             if int(number)==int(marker): #This checks if the user id is equal
                                          #to the marker parameter which is
                                          #defined in the function parameters
                                          #above
-                
                 amount=amount.replace(".00", "") #clear a double decimal if existent
                 return int(amount)  #When the two variables are
                                     #equal the coresponding balance
@@ -316,7 +315,7 @@ def getbal(marker, mode="read", value=0): #Defines the function
                   #baldic which means balance
                   #dictionary
 
-        for line in balance: #This iterates throgh the
+        for line in balances: #This iterates throgh the
                               #lines in the balances.txt
                               #file
 
@@ -445,9 +444,6 @@ def getbal(marker, mode="read", value=0): #Defines the function
                      #accessed by other
                      #users
 
-        dango=open("balances.txt").readlines()
-        dango[len(dango)-1]=dango[len(dango)-1].rstrip("\n")
-        open("balances.txt", "w").writelines(dango)
 #############################################################################
 
 
@@ -531,7 +527,7 @@ def deposit(user): #a function for the user
 
         return #end the function
 
-    input("wait why has this popped up? Maybe check the deposit function... ") #message that triggers
+    input("wait why is this popped up? Maybe check the deposit function... ") #message that triggers
                                                                               #as a debug marker if
                                                                               #for some reason
                                                                               #the function doesn't
@@ -576,7 +572,7 @@ def withdraw(user): #function to deposit
 
         return withdraw(user) #ask again
 
-    if not ((choice%10==0 and choice > 40) or choice%20==0) or not choice>0: #if they have
+    if not (choice%10==0 and choice > 40) or not choice>0: #if they have
                                                            #entered a float
                                                            #or integer,
                                                            #but it is not
@@ -638,7 +634,7 @@ def receipt(user, transact, amount): #function to make a receipt
   {now.strftime('Date and Time: %D at %H:%M:%S.')}
   Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)} 
   Transaction ID: {r(10000, 99999)}
-  User: {correctcaps(user, ['all'])}, PIN: {"**"+str(userdic[user])[2:]}
+  User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
   Transaction: {correctcaps(transact)} of ${amount}.
   New Balance: ${getbal(usernum[user])}
   {now.strftime('Great Bank® Ltd.  %Y')}''')
@@ -751,13 +747,13 @@ def receipt(user, transact, amount): #function to make a receipt
 
             a=False #end the while loop
     
-    return count, transactlog #for ask function
+    return transactlog #for ask function
 
 def ask(user, transact, amount): #function to ask the user
                                  #if they want to see
                                  #the receipt
 
-    number, transactlog=receipt(user, transact, amount) #get contents that
+    transactlog=receipt(user, transact, amount) #get contents that
                                                 #were written to
                                                 #receipt
     logo(2) # logo in corner
@@ -766,7 +762,6 @@ def ask(user, transact, amount): #function to ask the user
 
     if print_receipt in ["y", "yes"]: #if they answer
                                       #positively
-
 
         wipe() #clear screen to
                #make space for
@@ -1024,11 +1019,7 @@ def local(s_w=32, s_h=38): #local function, this
     
 def login(name,password):
   logo(1)
-  try:
-    condition=int(userdic[name])==int(password)
-  except:
-    conditon=False
-  if condition: #This checks if the
+  if int(userdic[name])==int(password): #This checks if the
                                         #login details are
                                         #correct based on
                                         #the dictionary
@@ -1100,7 +1091,7 @@ def register(name,password):
       amount="10.00"
       sprint(f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
 
-  file.write(f"\n{correctcaps(name, ['all'])}: {nextmark},{amount}") #add an entry to the
+  file.write(f"{correctcaps(name, ['all'])}: {nextmark},{amount}\n") #add an entry to the
                                                                      #balances file for
                                                                      #the new user,
                                                                      #with $420.
@@ -1151,11 +1142,7 @@ def delete(name):
         PIN = tinput(f'To delete {name}, enter the PIN, or "cancel" to cancel: ')
         if PIN == "cancel":
             return begin()
-        try:
-            condition=(int(PIN) == int(userdic[name]))
-        except:
-            conditon=False
-        if condition:
+        if int(PIN) == int(userdic[name]):
             try:
                 file = open("users.txt").readlines()  # a+ Opens a file for both appending and reading.
                 extra = file[:file.index("**\n") + 1]  # save everything above the first divisor
@@ -1215,6 +1202,7 @@ def access(option, name=""):  #script to ask
     logo(3)
     if option in ["e", "exit"]:
         sprint("Shutting down. Thank you for using Great Bank ATM.")
+        keyboard.press_and_release('F11')
         sys.exit("exited by initial menu")
     if option == "l":
         option = "login"
@@ -1253,6 +1241,13 @@ def access(option, name=""):  #script to ask
 
         else:
             sprint(f"The user {correctcaps(name, ['all'])} is not registered. Please try again.")
+            print("Registered Users", end=": ")
+            usrlst=[]
+            for elem in userdic:
+                usrlst.append(correctcaps(elem))
+                usrstrng=", ".join(usrlst)
+            print(usrstrng)
+            t(3)
             begin("login")
 
     elif option in ["register", "r"]:  #Checks what
@@ -1274,7 +1269,8 @@ def access(option, name=""):  #script to ask
             wipe()
             logo(2)
             print("Register: ")
-            password = str(tinput(f"Enter a new PIN for user {correctcaps(name, ['all'])}: "))  # prompts the user to input
+            password = str(
+                tinput(f"Enter a new PIN for user {correctcaps(name, ['all'])}: "))  # prompts the user to input
             if password == "cancel":  # their password
                 return begin()
             if password.isdigit() == False:
@@ -1453,8 +1449,9 @@ try:# all of this
             shutil.rmtree(mypath)
     except:
         pass  # if the file does not exist
-
+    
     ##############################################################
+    import wx
     app = wx.App(False)  # the wx.App object
     # must be created
     # first.
@@ -1465,7 +1462,7 @@ try:# all of this
     system(f'mode con: cols={col} lines={lin}')  # change the size
     # of the terminal
     # window
-
+    
     keyboard.press_and_release('F11')  # this fullscreens
     # the terminal
     # window
@@ -1474,7 +1471,7 @@ except: #this runs if
         #they are not
         #using the
         #command prompt
-
+    app = wx.App(False)
     try: #attempt to make
          #a file that
          #triggers the

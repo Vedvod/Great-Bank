@@ -5,5 +5,3 @@ Step 4: Withdraw appears, enter a valid amount. A valid amount is a multiple of 
 Step 5: Receipt appears.
 Step 6: Log out.
 Step 7: close the file.
-
-os.environ['COMPUTERNAME']

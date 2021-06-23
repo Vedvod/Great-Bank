@@ -29,18 +29,16 @@ Make sure to run the [toggleclear.py file](https://github.com/Vedvod/Great-Bank/
 Receipts from transactions can be found in the [receipts directory](https://github.com/Vedvod/Great-Bank/tree/main/Scripts/receipts) within the [Scripts folder](https://github.com/Vedvod/Great-Bank/tree/main/Scripts). Each user has three receipt slots, after which the oldest receipt will be overwritten.  
 Our documentation can (will) be found on the [logbook document](https://docs.google.com/document/d/14dr7cmlmFfUxpMpVZmCA-mB59K0Lx-MyVKvaO-z-XV4/). This documentation will be updated as the project progresses.
 
-Last updated: 10:09 21/06/21
+Last updated: 13:35 16/06/21
 
 # Changelog  
 
 ## 0.6 - Polishing Up
-**21/06/21**  
-0.6.3.1 - Fixed up code done yesterday, yet more bugfixing.
 
-**20/06/21**  
+**20/06/21**
 0.6.3 - Finished delete function completely, more bugfixing and commenting.
 
-**19/06/21**  
+**19/06/21**
 0.6.2.1 - Commenting, bugfixing, renewal of work on delete function.
 
 **18/06/21**  
