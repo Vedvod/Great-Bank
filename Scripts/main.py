@@ -1,4 +1,11 @@
 ######################################################################### Importing the modules
+from colorama import Fore, Back, Style, init
+init()
+Y=Fore.YELLOW
+G=Fore.GREEN
+W=Style.RESET_ALL
+R=Fore.RED
+O=Fore.WHITE
 import os  # imports os module
 
 from os import get_terminal_size
@@ -142,9 +149,8 @@ global endbreak  #makes endbreak global
 charbreak=0.025
 
 ###########################################################################
-
-
-
+print(f"{Fore.MAGENTA}Purple output{Fore.RESET} is not real output, just to guide you while testing. Press Enter to continue: ", end="")
+input()
 
 
 
@@ -163,11 +169,13 @@ for combo in userlist: #combo is user name + pin
 
     name, pin, nextmark = combo.strip("\n").split(",") #split username and pin
                                                        #on the basis of a comma
-    userdic[name] = pin.strip() #removes spaves the pin
+    if name.startswith("|"):
+        pin="lock"
+    userdic[name.strip("|")] = pin.strip() #removes spaves the pin
 
     nextmark=int(nextmark) #next mark is the
                            #variable for the next id
-
+    
     usernum[name] = nextmark #Gives user a user
                              #number
 
@@ -226,7 +234,7 @@ def getbal(marker, mode="read", value=0): #Defines the function
 
     balances=open("balances.txt") #Opens the balances.txt file
 
-    if mode in ["r", "read"]: #Mode is thte optional parameter
+    if mode in ["r", "read", "readformatted", "rf"]: #Mode is thte optional parameter
                               #for the open() function.
                               #If no parameter is set then it
                               #will default to open and
@@ -295,7 +303,21 @@ def getbal(marker, mode="read", value=0): #Defines the function
                                          #defined in the function parameters
                                          #above
                 amount=amount.replace(".00", "") #clear a double decimal if existent
-                return int(amount)  #When the two variables are
+                if len(str(amount))>8 and mode.lower() in ["rf", "readformatted"]:
+                    amount=f"{str(amount)[0]}.{str(amount)[1]}{str(amount)[2]}{str(amount)[3]}*10^{len(str(amount))-1}"
+                elif mode.lower() in ["rf", "readformatted"]:
+                    samount=str(amount)
+                    amrem=len(samount)%3
+                    amlen=len(samount)
+                    amount=samount[:amrem]
+                    samount=samount[amrem:]
+                    for i in range(math.floor((amlen)/3)):
+                        amount+=","+samount[:3]
+                        samount=samount[3:]
+                    amount=amount.lstrip(",")
+                else:
+                    amount=int(amount)
+                return amount       #When the two variables are
                                     #equal the coresponding balance
                                     #will be returned
                                     #the amount variable is the balance
@@ -467,9 +489,7 @@ def deposit(user): #a function for the user
 
     logo(2) #display logo in corner
 
-    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to deposit? Type "cancel" to cancel. $').lower() #ask the user to
-                                                                                                                                    #submit deposit
-                                                                                                                                    #amount
+    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to deposit? Type "cancel" to cancel. $').lower() #ask the user to                                                                                                                                   #amount
 
     if choice=="cancel": #if the user
                          #enters the
@@ -477,6 +497,16 @@ def deposit(user): #a function for the user
 
         menu(user) #return to menu
         return #end
+
+    choice=choice.replace("e", "*10**")                                                                                                                                #submit deposit
+    choice=choice.replace("^", "**")
+    
+    try:
+        input(choice)
+        choice=eval(choice)
+    except:
+        pass
+
     choice=checktype(choice) #convert choice to
                              #the highest type
                              #possibe
@@ -545,16 +575,23 @@ def withdraw(user): #function to deposit
     logo(2) #display logo
             #in corner
 
-    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to withdraw? Type "cancel" to cancel. $').lower() #interacts with user
-                                                                                                                                     #and asks for
+    choice=tinput(f'\nHello, {correctcaps(user, ["all"])}. How much would you like to withdraw? Type "cancel" to cancel. $').lower() #interacts with user                                                                                                                                 #and asks for
                                                                                                                                      #amount to withdraw
-
     if choice=="cancel": #if the user
                          #enters the
                          #cancel input
 
-        menu(user) #return to menu
-        return #end
+        return menu(user) #return to menu
+         #end
+
+    choice=choice.replace("e", "*10**")                                                                                                                                #submit deposit
+    choice=choice.replace("^", "**")
+    
+    try:
+        choice=eval(choice)
+    except:
+        pass
+
     choice=checktype(choice)#convert choice
                             #to the highest
                             #type possibe
@@ -572,7 +609,7 @@ def withdraw(user): #function to deposit
 
         return withdraw(user) #ask again
 
-    if not (choice%10==0 and choice > 40) or not choice>0: #if they have
+    if not (choice%10==0 and choice > 40) or choice==20 or not choice>0: #if they have
                                                            #entered a float
                                                            #or integer,
                                                            #but it is not
@@ -635,8 +672,8 @@ def receipt(user, transact, amount): #function to make a receipt
   Location: {os.environ['COMPUTERNAME']} branch, machine #{r(1,6)} 
   Transaction ID: {r(10000, 99999)}
   User: {correctcaps(user, ['all'])}, PIN: {userdic[user]}
-  Transaction: {correctcaps(transact)} of ${amount}.
-  New Balance: ${getbal(usernum[user])}
+  Transaction: {correctcaps(transact)} of ${amount}.00
+  New Balance: ${getbal(usernum[user])}.00
   {now.strftime('Great Bank® Ltd.  %Y')}''')
     #an f-string that fills in a template to construct a reciept for the user.
     #line 1 adds the small logo to the corner of the receipt
@@ -756,7 +793,8 @@ def ask(user, transact, amount): #function to ask the user
     transactlog=receipt(user, transact, amount) #get contents that
                                                 #were written to
                                                 #receipt
-    logo(2) # logo in corner
+     # logo in corner
+    logo(3)
     print_receipt = checkinput("Would you like to print a reciept? Y|N: ") #ask the user if they
                                                                            #wish to see the receipt
 
@@ -767,7 +805,7 @@ def ask(user, transact, amount): #function to ask the user
                #make space for
                #receipt
 
-        logo(16) #logo in corner
+        logo(18) #logo in corner
         print(transactlog) #print the receipt's
                            #contents
 
@@ -867,7 +905,28 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
                                  #from the side
                                  #of the screen
 
-    log=(f'''
+    log=(Style.BRIGHT+f'''
+    {gap}{R}+================================================+
+    {gap}ǁ         {G}GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    {R}ǁ
+    {gap}ǁ      {G}GGG{Y}::::::::::::{G}G     B{Y}::::::::::::::::{G}B   {R}ǁ
+    {gap}ǁ    {G}GG{Y}:::::::::::::::{G}G     B{Y}::::::{G}BBBBBB{Y}:::::{G}B  {R}ǁ
+    {gap}ǁ   {G}G{Y}:::::{G}GGGGGGGG{Y}::::{G}G     BB{Y}:::::{G}B     B{Y}:::::{G}B {R}ǁ
+    {gap}ǁ  {G}G{Y}:::::{G}G       GGGGGG       B{Y}::::{G}B     B{Y}:::::{G}B {R}ǁ
+    {gap}ǁ {G}G{Y}:::::{G}G                     B{Y}::::{G}B     B{Y}:::::{G}B {R}ǁ
+    {gap}ǁ {G}G{Y}:::::{G}G                     B{Y}::::{G}BBBBBB{Y}:::::{G}B  {R}ǁ
+    {gap}ǁ {G}G{Y}:::::{G}G    GGGGGGGGGG       B{Y}:::::::::::::{G}BB   {R}ǁ
+    {gap}ǁ {G}G{Y}:::::{G}G    G{Y}::::::::{G}G       B{Y}::::{G}BBBBBB{Y}:::::{G}B  {R}ǁ
+    {gap}ǁ {G}G{Y}:::::{G}G    GGGGG{Y}::::{G}G       B{Y}::::{G}B     B{Y}:::::{G}B {R}ǁ
+    {gap}ǁ {G}G{Y}:::::{G}G        G{Y}::::{G}G       B{Y}::::{G}B     B{Y}:::::{G}B {R}ǁ
+    {gap}ǁ  {G}G{Y}:::::{G}G       G{Y}::::{G}G       B{Y}::::{G}B     B{Y}:::::{G}B {R}ǁ
+    {gap}ǁ   {G}G{Y}:::::{G}GGGGGGGG{Y}::::{G}G     BB{Y}:::::{G}BBBBBB{Y}::::::{G}B {R}ǁ
+    {gap}ǁ    {G}GG{Y}:::::::::::::::{G}G     B{Y}:::::::::::::::::{G}B  {R}ǁ
+    {gap}ǁ      {G}GGG{Y}::::::{G}GGG{Y}:::{G}G     B{Y}::::::::::::::::{G}B   {R}ǁ
+    {gap}ǁ         {G}GGGGGG   GGG{O}Great {G}BBBBBBBBBBBBBBBB{O}Bank {R}ǁ
+    {gap}+================================================+{W}
+    '''+Fore.RESET) #logo which is in use, with colorama
+
+    """
     {gap}+================================================+
     {gap}ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
     {gap}ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
@@ -886,28 +945,7 @@ def logo(height_in, size="large", rtn="no"): #Defines the logo() function
     {gap}ǁ      GGG::::::GGG:::G     B::::::::::::::::B   ǁ
     {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
     {gap}+================================================+
-    ''') #logo 1 (in use)
-
-    """
-    {gap}+================================================+
-    {gap}ǁ         GGGGGGGGGGGGG     BBBBBBBBBBBBBBBBB    ǁ
-    {gap}ǁ      GGG::::::::::::G     B::::::::::::::::B   ǁ
-    {gap}ǁ    GG:::::::::::::::G     B::::::BBBBBB:::::B  ǁ
-    {gap}ǁ   G:::::GGGGGGGG::::G  $  BB:::::B     B:::::B ǁ
-    {gap}ǁ  G:::::G       GGGGGG  $$   B::::B     B:::::B ǁ
-    {gap}ǁ G:::::G               $  $  B::::B     B:::::B ǁ
-    {gap}ǁ G:::::G               $     B::::BBBBBB:::::B  ǁ
-    {gap}ǁ G:::::G    GGGGGGGGGG  $$   B:::::::::::::BB   ǁ
-    {gap}ǁ G:::::G    G::::::::G    $  B::::BBBBBB:::::B  ǁ
-    {gap}ǁ G:::::G    GGGGG::::G $  $  B::::B     B:::::B ǁ
-    {gap}ǁ G:::::G        G::::G  $$   B::::B     B:::::B ǁ
-    {gap}ǁ  G:::::G       G::::G   $   B::::B     B:::::B ǁ
-    {gap}ǁ   G:::::GGGGGGGG::::G     BB:::::BBBBBB::::::B ǁ
-    {gap}ǁ    GG:::::::::::::::G     B:::::::::::::::::B  ǁ
-    {gap}ǁ      GGG::::::GGG:::G     B::::::::::::::::B   ǁ
-    {gap}ǁ         GGGGGG   GGGGreat BBBBBBBBBBBBBBBBBank ǁ
-    {gap}+================================================+
-    """ #logo 2 (possibly used in future)
+    """ #What the logo actually shows up as
 
 
     if size=="small": #if asking
@@ -969,7 +1007,7 @@ def local(s_w=32, s_h=38): #local function, this
                                                   #top of the
                                                   #screen to center
                                                   #the text
-    print(f'''
+    print(f'''{G}{Style.BRIGHT}
     {gap1}        GGGGGGGGGGGGG                                                                                      tttt 
     {gap1}     GGG::::::::::::G                                                                                    ttt:::t
     {gap1}   GG:::::::::::::::G                                                                                    t:::::t
@@ -1004,7 +1042,7 @@ def local(s_w=32, s_h=38): #local function, this
     {gap2}B:::::::::::::::::B      a:::::aaaa::::::a        n::::n    n::::n     k::::::k  k:::::k
     {gap2}B::::::::::::::::B        a::::::::::aa:::a       n::::n    n::::n     k::::::k   k:::::k
     {gap2}BBBBBBBBBBBBBBBBB          aaaaaaaaaa  aaaa       nnnnnn    nnnnnn     kkkkkkkk    kkkkkkk
-    ''')
+    {W}''')
     t(2)
     begin()
 
@@ -1016,9 +1054,17 @@ def local(s_w=32, s_h=38): #local function, this
 
 
 ############################################################################# User Credentials
-    
+
 def login(name,password):
+  testforvalue(f"{name}fails", 0)
+
   logo(1)
+  if userdic[name]=="lock":
+      print("This user is locked! Please contact Great Bank customer support to resolve this. ")
+      sprint("\u001b[35m."+"This means that to reset the user, edit the users.txt")
+      return begin()
+
+  
   if int(userdic[name])==int(password): #This checks if the
                                         #login details are
                                         #correct based on
@@ -1027,10 +1073,11 @@ def login(name,password):
                                         #of script (and
                                         #modified in
                                         #register, maybe)
-
+    
     sprint(f"{correctcaps(name, ['all'])} successfully logged in.") #Displays the
                                                                     #login was
                                                                     #successful
+    fails=0
 
     menu(name) #calls menu function,
                #this allows the
@@ -1043,13 +1090,30 @@ def login(name,password):
         #the correct login
         #then they will not
         #be granted access
-
-    sprint(f"This is not the PIN for user {correctcaps(name, ['all'])}. Please try again.") #displays that
+    
+    exec(f"global {name}fails\n{name}fails+=1")
+    sprint(f"This is not the PIN for user {correctcaps(name, ['all'])}. Please try again. You have failed {eval(f'''{name}fails''')} times.") #displays that
                                                                                             #the user has
                                                                                             #entered the
                                                                                             #wrong login
-                                                                                            #details
+    if int(eval(f'''{name}fails'''))>=5:                                                    #details
+        try:
+            file = open("users.txt").readlines()  #  Opens a file as list of lines.
+            for count, line in enumerate(file):
+                if line.startswith(f"{name.lower()},"):
+                    file[count]="|"+line
+                    break
+
+            open("users.txt", "w").writelines(file)
+ 
+            userdic[name]="lock"
+            sprint(f"Account {correctcaps(name)} is now locked! Contact Great Bank management to unlock.")
+        except:
+            print("Part A failed")
+            
+
     access("login")
+
 
 def register(name,password):
 
@@ -1091,7 +1155,7 @@ def register(name,password):
       amount="10.00"
       sprint(f"User {correctcaps(name, ['all'])} is now registered. As a bonus, you have a free $10 in your new account.")
 
-  file.write(f"{correctcaps(name, ['all'])}: {nextmark},{amount}\n") #add an entry to the
+  file.write(f"\n{correctcaps(name, ['all'])}: {nextmark},{amount}") #add an entry to the
                                                                      #balances file for
                                                                      #the new user,
                                                                      #with $420.
@@ -1118,7 +1182,7 @@ def begin(something=""):  #the beginning
 
         return
 
-    logo(1)
+    logo(3)
 
     access(checkinput("""Would you like to "exit", or "login" to, "register", or "delete" a user? """, #Prompts user to input
                       ["exit", "e", "login", "register", "delete", "l", "r",                           #either, only asked
@@ -1128,23 +1192,31 @@ def begin(something=""):  #the beginning
 
 
 
-#----------------------------------------------------------------------------# Remaining work to comment
+#----------------------------------------------------------------------------#
 def delete(name):
     global usernum
     global userdic
+    
+    if userdic[name]=="lock":
+        print("This user is locked! Please contact Great Bank customer support to resolve this. ")
+        sprint("\u001b[35m."+"This means that to reset the user, edit the users.txt")
+        return begin()
+    
     if not name in userdic:
         sprint("This user does not exist! Please try again.")
         return begin()
+    
     elif name.lower() in ["sameer", "dunne", "ved"]:
         sprint("This user is an essential user, and can not be deleted! Please try again.")
         return begin()
+    
     else:
         PIN = tinput(f'To delete {name}, enter the PIN, or "cancel" to cancel: ')
         if PIN == "cancel":
             return begin()
         if int(PIN) == int(userdic[name]):
             try:
-                file = open("users.txt").readlines()  # a+ Opens a file for both appending and reading.
+                file = open("users.txt").readlines()  #  Opens a file as list of lines.
                 extra = file[:file.index("**\n") + 1]  # save everything above the first divisor
                 file = file[file.index("**\n") + 1:]  # remove everything above the divisior
                 file.remove("********\n")  # remove the divisor between main accounts and extra accounts
@@ -1199,10 +1271,11 @@ def access(option, name=""):  #script to ask
 
     option = option.lower()
     wipe()
-    logo(3)
+    logo(4)
     if option in ["e", "exit"]:
         sprint("Shutting down. Thank you for using Great Bank ATM.")
         keyboard.press_and_release('F11')
+        system(f'mode con: cols={120} lines={30}')
         sys.exit("exited by initial menu")
     if option == "l":
         option = "login"
@@ -1227,17 +1300,26 @@ def access(option, name=""):  #script to ask
                                   #next script
                                   #based on
                                   #what they chose
-
+    
         if name in userdic:
+            if userdic[name]=="lock":
+                print("This user is locked! Please contact Great Bank customer support to resolve this. ")
+                sprint("\u001b[35m."+"This means that to reset the user, edit the users.txt")
+                return begin()
 
-            password = checkintype(f"Enter the PIN for user {correctcaps(name, ['all'])}: ",
-
-                                   [int])  #get the user
+            password = tinput(f"Enter the PIN for user {correctcaps(name, ['all'])}, or 'cancel' to cancel: ").strip()
+                                            #get the user
                                            #to input
                                            #password
-
-            login(name, password)  #runs the
-                                   #login function
+            if type(password)==str and len(password)==4 and password.isdigit():
+                login(name, password)  #runs the
+                                       #login function
+            elif password.lower()=="cancel":
+                return begin()
+            else:
+                sprint("The password input must be 4 digits")
+                sprint("For example: 3416")
+                return begin("login")
 
         else:
             sprint(f"The user {correctcaps(name, ['all'])} is not registered. Please try again.")
@@ -1267,14 +1349,14 @@ def access(option, name=""):  #script to ask
         password = "0"
         while len(str(password)) != 4 or password.isdigit() == False:
             wipe()
-            logo(2)
+            logo(4)
             print("Register: ")
             password = str(
                 tinput(f"Enter a new PIN for user {correctcaps(name, ['all'])}: "))  # prompts the user to input
             if password == "cancel":  # their password
                 return begin()
             if password.isdigit() == False:
-                sprint("The password must only be a 4 character digit")
+                sprint("The password must only be a 4 digits")
                 sprint("For example: 1234")
                 continue
 
@@ -1292,18 +1374,20 @@ def access(option, name=""):  #script to ask
 ############################################################################# Menu
 
 def menu(user):
-  balance=getbal(usernum[user])
+  balance=getbal(usernum[user], "rf")
+  if "^" not in balance:
+      balance+=".00"
   logo(9)
   charbreak=0.01
   
-  choice_input=checkinput(f"""Hello, {correctcaps(user, ['all'])}, your current balance is ${balance}.00 
+  choice_input=checkinput(f"""Hello, {correctcaps(user, ['all'])}, your current balance is ${balance} 
 
   1: Deposit
   2: Withdraw
   3: Log Out
   4: Exit
   
-  What would you like to do, {correctcaps(user, ['all'])}? """, ["1", "2", "3", "4", "deposit", "withdraw", "log out", "exit", "d", "w", "L", "e"])
+  What would you like to do, {correctcaps(user, ['all'])}? """, ["1", "2", "3", "4", "deposit", "withdraw", "log out", "exit", "d", "w", "L", "e", "n=9"])
 
   charbreak=0.4
   if choice_input in ["1", "deposit", "d"]:
@@ -1320,7 +1404,6 @@ def menu(user):
   menu(user)
 
 #############################################################################
-
 
 
 
@@ -1355,7 +1438,7 @@ try:# all of this
 
 
     def tinput(instring, a="!"):
-        return input(instring)
+        return input(instring).strip()
 
 
     def checkintype(input_string, list_of_types, letter="", slow=True):  # repeat until
@@ -1399,7 +1482,7 @@ try:# all of this
 
         wipe()
 
-        logo(4)
+        logo(3)
 
         return checkintype(input_string, list_of_types, letter, slow)  # run again
 
@@ -1409,11 +1492,16 @@ try:# all of this
         # is in given
         # list of accepted
         mods = set(modifier_list)
+        for elem in modifier_list:
+            if elem.startswith("n="):
+                n=eval(f'{elem.strip("n=")}')
         if "modlist" in modifier_list:
             sprint("modlist - Opens this menu")
             sprint("pc, preserve, preservecaps - Preserves Capitals")
             sprint("db, dev, debug, developer - Activates Debug Mode")
-        inn = tinput(str(input_string))  # input of given string
+        from getpass import getpass
+        inn = input(str(input_string))  # input of given string
+
         innn = inn
         if len(mods.intersection({"pc", "preserve", "preservecaps"})) == 0:
             innn = innn.lower()
@@ -1431,14 +1519,13 @@ try:# all of this
             charbreak = 0.01
 
             endbreak = 0.05
-
+            
             tline(str(inn) + " is not a valid response.")  #print that it
-                                                           #is not in list
-
+                                                                                               #is not in list
             tline(liststring("Valid", "", ", ", comparison_list))  # print what's valid
+            t(0.75)
             wipe()
-            logo(4)
-            return checkinput(input_string, comparison_list)  # run again
+            return checkinput(input_string, comparison_list, modifier_list)  # run again
 
 
     try:  # attempt to delete file
@@ -1449,7 +1536,8 @@ try:# all of this
             shutil.rmtree(mypath)
     except:
         pass  # if the file does not exist
-    
+
+
     ##############################################################
     import wx
     app = wx.App(False)  # the wx.App object
@@ -1491,12 +1579,6 @@ except: #this runs if
     tinput("This script is recommended to be run on the command line, using the provided batch file, but if you wish to continue, press Enter: ") #Tell user
 
 #############################################################################
-
-
-
-
-
-
 
 
 ############################################################################# Mainline of the Code

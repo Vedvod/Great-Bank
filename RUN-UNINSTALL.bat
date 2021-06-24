@@ -1,1 +1,1 @@
-py -m pip uninstall wxpython pillow six numpy keyboard
+py -m pip uninstall wxpython pillow six numpy keyboard colorama
